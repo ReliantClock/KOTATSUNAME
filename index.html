@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buscador de Series</title>
+  <link rel="stylesheet" href="buscador.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="wrapper">
+    <header class="header">
+      <h1 class="logo">⛩ KOTATSUNAME</h1>
+      <p class="tagline">Encuentra tu próxima obsesión</p>
+    </header>
+
+    <!-- BARRA DE BÚSQUEDA -->
+    <div class="search-bar">
+      <span class="search-icon"></span>
+      <input type="text" id="searchInput" placeholder="Buscar por nombre..." autocomplete="off" />
+      <button id="clearBtn" class="clear-btn" title="Limpiar">✕</button>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filters-panel">
+
+      <!-- Tipo -->
+      <div class="filter-group">
+        <label class="filter-label">Tipo</label>
+        <div class="tag-group" id="tipoFilter">
+          <button class="tag active" data-filter="tipo" data-value="">Todos</button>
+          <button class="tag" data-filter="tipo" data-value="anime">Anime</button>
+          <button class="tag" data-filter="tipo" data-value="manga">Manga</button>
+          <button class="tag" data-filter="tipo" data-value="manhwa">Manhwa</button>
+          <button class="tag" data-filter="tipo" data-value="donghua">Donghua</button>
+        </div>
+      </div>
+
+      <!-- Géneros -->
+      <div class="filter-group">
+        <div class="filter-label-row">
+          <label class="filter-label">Género</label>
+          <button class="genres-toggle" id="genresToggle">Ver todos ▾</button>
+        </div>
+        <div class="tag-group genres-collapsed" id="generoFilter">
+          <!-- Fila 1 — visible siempre -->
+          <button class="tag active" data-filter="genero" data-value="">Todos</button>
+          <button class="tag" data-filter="genero" data-value="accion">Acción</button>
+          <button class="tag" data-filter="genero" data-value="romance">Romance</button>
+          <button class="tag" data-filter="genero" data-value="fantasia">Fantasía</button>
+          <button class="tag" data-filter="genero" data-value="terror">Terror</button>
+          <button class="tag" data-filter="genero" data-value="comedia">Comedia</button>
+          <button class="tag" data-filter="genero" data-value="drama">Drama</button>
+          <button class="tag" data-filter="genero" data-value="sci-fi">Sci-Fi</button>
+          <button class="tag" data-filter="genero" data-value="sobrenatural">Sobrenatural</button>
+          <!-- Fila 2 — oculta por defecto -->
+          <button class="tag genre-extra" data-filter="genero" data-value="misterio">Misterio</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="aventura">Aventura</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="historia">Historia</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="deportes">Deportes</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="slice-of-life">Slice of Life</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="psicologico">Psicológico</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="seinen">Seinen</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="shounen">Shounen</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="shoujo">Shoujo</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="josei">Josei</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="isekai">Isekai</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="mecha">Mecha</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="musical">Musical</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="harem">Harem</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="ecchi">Ecchi</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="escolar">Escolar</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="culinary">Culinario</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="artes-marciales">Artes Marciales</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="vampiros">Vampiros</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="magia">Magia</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="apocalipsis">Apocalipsis</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="viaje-en-el-tiempo">Viaje en el Tiempo</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="militar">Militar</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="crimen">Crimen</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="zombies">Zombies</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="survival">Supervivencia</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="video-juegos">Video Juegos</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="cyberpunk">Cyberpunk</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="dark-fantasy">Dark Fantasy</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="cultivation">Cultivo/Xianxia</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="murim">Murim</button>
+        </div>
+      </div>
+
+      <!-- Temporadas -->
+      <div class="filter-group">
+        <label class="filter-label">Temporadas</label>
+        <div class="range-row">
+          <span class="range-label">Mín</span>
+          <input type="range" id="temporadasMin" min="1" max="10" value="1" />
+          <span id="temporadasMinVal" class="range-val">1</span>
+          <span class="range-label">Máx</span>
+          <input type="range" id="temporadasMax" min="1" max="10" value="10" />
+          <span id="temporadasMaxVal" class="range-val">10+</span>
+        </div>
+      </div>
+
+      <!-- Botón reset -->
+      <button id="resetFilters" class="reset-btn">↺ Resetear filtros</button>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div class="results-header">
+      <span id="resultCount" class="result-count">0 resultados</span>
+    </div>
+
+    <div id="resultsGrid" class="results-grid"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <span class="empty-icon">🌸</span>
+      <p>Sin resultados para tu búsqueda</p>
+    </div>
+  </div>
+
+  <!-- ====== MODAL ====== -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+
+      <!-- Botón cerrar -->
+      <button class="modal-close" id="modalClose" aria-label="Cerrar">✕</button>
+
+      <!-- Parte izquierda: portada -->
+      <div class="modal-cover" id="modalCover"></div>
+
+      <!-- Parte derecha: info -->
+      <div class="modal-content">
+        <div class="modal-badge" id="modalBadge"></div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+
+        <div class="modal-tags" id="modalTags"></div>
+
+        <p class="modal-sinopsis" id="modalSinopsis"></p>
+
+        <div class="modal-footer">
+          <span class="modal-seasons" id="modalSeasons"></span>
+          <div class="modal-btns" id="modalBtns"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="buscador.js"></script>
+</body>
+</html>
