@@ -3,8 +3,8 @@ export const CATALOG = [
     id: 1, titulo: "Boku no Kokoro no Yabai Yatsu", tipo: ["manga", "anime"],
     generos: ["romance", "comedia", "escolar"], temporadas: 2, cover: "001.jpeg",
     sinopsis: "Kyotaro Ichikawa es un chico solitario que fantasea con asesinar a la chica popular de la clase, pero pronto descubre que sus sentimientos son muy diferentes.",
-    urlManga: "https://tu-sitio.com/boku-no-kokoro-manga",
-    urlAnime: "https://tu-sitio.com/boku-no-kokoro-anime"
+    urlManga: "https://www.leercapitulo.co/leer/5ungi75ry5/boku-no-kokoro-no-yabai-yatsu/1/",
+    urlAnime: "https://latino.solo-latino.com/es/detail/drama/8qev2R638st7yupzrp3dC-The-Dangers-in-My-Heart/1"
   },
   {
     id: 2, titulo: "Kimi ni Todoke", tipo: ["manga", "anime"],
@@ -29,14 +29,14 @@ export const CATALOG = [
     id: 5, titulo: "Sono Bisque Doll wa Koi wo Suru", tipo: ["manga", "anime"],
     generos: ["romance", "comedia", "recuentos de la vida"], temporadas: 1, cover: "005.jpeg",
     sinopsis: "Wakana Gojo, un chico tímido que hace muñecas Hina, termina ayudando a la hermosa Marin Kitagawa a cumplir su sueño de hacer cosplay.",
-    urlManga: "https://tu-sitio.com/bisque-doll-manga",
+    urlManga: "https://www.leercapitulo.co/leer/txy8952tuk/sono-bisque-doll-wa-koi-wo-suru/1/",
     urlAnime: "https://tu-sitio.com/bisque-doll-anime"
   },
   {
     id: 6, titulo: "Giji Harem", tipo: ["manga", "anime"],
     generos: ["romance", "comedia", "escolar"], temporadas: 1, cover: "006.jpeg",
     sinopsis: "Nijakura es una chica del club de teatro que usa sus dotes de actuación para interpretar diferentes personalidades y darle a su senpai un 'harem'.",
-    urlManga: "https://tu-sitio.com/pseudo-harem-manga",
+    urlManga: "https://www.leercapitulo.co/leer/saxtbe43y1/pseudo-harem/1/",
     urlAnime: "https://tu-sitio.com/pseudo-harem-anime"
   },
   {
@@ -49,8 +49,8 @@ export const CATALOG = [
     id: 8, titulo: "Suki na Ko ga Megane wo Wasureta", tipo: ["manga", "anime"],
     generos: ["romance", "comedia", "escolar"], temporadas: 1, cover: "008.jpeg",
     sinopsis: "Komura siempre intenta ayudar a su compañera de asiento, Mie, quien constantemente olvida sus gafas y termina acercándose demasiado para poder ver.",
-    urlManga: "https://tu-sitio.com/mie-glasses-manga",
-    urlAnime: "https://tu-sitio.com/mie-glasses-anime"
+    urlManga: "https://www.leercapitulo.co/leer/tku8jvz85g/sukinako-ga-megane-wo-wasureta/1/",
+    urlAnime: "https://flixlat.com/es/detail/drama/ajXNJssIk4VZCNX5R4FFG-The-Girl-I-Like-Forgot-Her-Glasses"
   },
   {
     id: 9, titulo: "Tong Ling Fei (Psychic Princess)", tipo: ["donghua"],
@@ -68,7 +68,7 @@ export const CATALOG = [
     id: 11, titulo: "Fuufu Ijou, Koibito Miman.", tipo: ["manga", "anime"],
     generos: ["romance", "comedia", "escolar"], temporadas: 1, cover: "011.jpeg",
     sinopsis: "En una práctica escolar de 'entrenamiento matrimonial', Jirou es emparejado con la popular Akari, mientras sus respectivos intereses amorosos están juntos.",
-    urlManga: "https://tu-sitio.com/fuufu-ijou-manga",
+    urlManga: "https://www.leercapitulo.co/leer/toc6p5bxsw/fuufu-ijou-koibito-miman/1/",
     urlAnime: "https://tu-sitio.com/fuufu-ijou-anime"
   },
   {
