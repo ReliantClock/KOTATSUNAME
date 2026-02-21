@@ -1,30 +1,6 @@
 /**
  * ============================================================
- *  catalogo.js — Base de datos de títulos
- * ============================================================
- *  Agrega, edita o elimina entradas aquí sin tocar el buscador.
- *
- *  Estructura de cada entrada:
- *  {
- *    id        : número único,
- *    titulo    : "Nombre del título",
- *    tipo      : "manga" | "anime" | "manhwa" | "donghua",
- *    generos   : ["genero1", "genero2", ...],
- *    temporadas: número,
- *    cover     : "emoji"  ← o ruta/URL de imagen,
- *    sinopsis  : "Texto de descripción.",
- *
- *    -- URLs por formato (pon solo las que tenga el título) --
- *    urlAnime  : "https://...",   ← botón rojo    "Ver Anime"
- *    urlManga  : "https://...",   ← botón púrpura "Ver Manga"
- *    urlManhwa : "https://...",   ← botón cian    "Ver Manhwa"
- *    urlDonghua: "https://...",   ← botón verde   "Ver Donghua"
- *    url       : "https://...",   ← botón genérico (solo si no hay ninguno arriba)
- *  }
- *
- *  Géneros disponibles (puedes añadir los que necesites):
- *  accion · romance · fantasia · terror · comedia ·
- *  sci-fi · drama · sobrenatural · historia
+ * catalogo.js — Base de datos de títulos
  * ============================================================
  */
 
@@ -339,8 +315,8 @@ export const CATALOG = [
     id: 47, titulo: "The Girl Downstairs", tipo: "manhwa",
     generos: ["romance","drama","escolar","anime"], temporadas: 1, cover: "047.jpeg",
     sinopsis: "Un estudiante universitario descubre que su nueva vecina de abajo es una ex-idol famosa que se ha retirado del mundo.",
-    urlManhwa: "https://tu-sitio.com/lee-doona-manhwa",
-    urlAnime: "https://tu-sitio.com/lee-doona-anime"
+    urlManhwa: "https://tu-sitio.com/lee-douna-manhwa",
+    urlAnime: "https://tu-sitio.com/lee-douna-anime"
   },
   {
     id: 48, titulo: "Kaguya-sama: Love is War", tipo: "manga",
@@ -536,189 +512,172 @@ export const CATALOG = [
   },
       {
     id: 76, titulo: "Kimetsu no Yaiba", tipo: ["manga", "anime"],
-    generos: ["Acción", "Fantasía", "Aventura", "Shounen", "Historia", "Sobrenatural"], temporadas: 5, cover: "076.jpeg",
+    generos: ["acción", "fantasía", "aventura", "shounen", "historia", "sobrenatural"], temporadas: 5, cover: "076.jpeg",
     sinopsis: "Tanjiro Kamado lucha por encontrar una cura para su hermana Nezuko, convertida en demonio, mientras se entrena para ser un cazador de demonios en un mundo lleno de peligros.",
     urlManga: "https://tu-sitio.com/kimetsu-no-yaiba-manga",
     urlAnime: "https://tu-sitio.com/kimetsu-no-yaiba-anime"
   },
   {
     id: 77, titulo: "Solo Leveling (Na Honjaman Level Up)", tipo: ["manhwa", "anime"],
-    generos: ["Acción", "Aventura", "Fantasía", "Video Juegos", "Sobrenatural"], temporadas: 2, cover: "077.jpeg",
+    generos: ["acción", "aventura", "fantasía", "video juegos", "sobrenatural"], temporadas: 2, cover: "077.jpeg",
     sinopsis: "En un mundo donde cazadores deben luchar contra monstruos, el cazador más débil de la humanidad, Sung Jin-woo, obtiene un sistema que le permite subir de nivel sin límites.",
     urlManhwa: "https://tu-sitio.com/solo-leveling-manhwa",
     urlAnime: "https://tu-sitio.com/solo-leveling-anime"
   },
   {
     id: 78, titulo: "Mushoku Tensei: Isekai Ittara Honki Dasu", tipo: ["manga", "anime"],
-    generos: ["Isekai", "Fantasía", "Aventura", "Ecchi", "Magia", "Viaje en el Tiempo"], temporadas: 3, cover: "078.jpeg",
+    generos: ["isekai", "fantasía", "aventura", "ecchi", "magia", "viaje en el tiempo"], temporadas: 3, cover: "078.jpeg",
     sinopsis: "Un hombre sin empleo muere y reencarna en un mundo de fantasía conservando sus recuerdos. Decide vivir esta nueva vida al máximo como Rudeus Greyrat.",
     urlManga: "https://tu-sitio.com/mushoku-tensei-manga",
     urlAnime: "https://tu-sitio.com/mushoku-tensei-anime"
   },
   {
     id: 79, titulo: "The Beginning After the End", tipo: ["manhwa"],
-    generos: ["Acción", "Aventura", "Fantasía", "Isekai", "Magia", "Reencarnación"], cover: "079.jpeg",
+    generos: ["acción", "aventura", "fantasía", "isekai", "magia", "reencarnación"], cover: "079.jpeg",
     sinopsis: "El Rey Grey, un líder solitario y poderoso, reencarna en un mundo de magia y monstruos para corregir los errores de su pasado y proteger a su nueva familia.",
     urlManhwa: "https://tu-sitio.com/tbate-manhwa"
   },
   {
     id: 80, titulo: "Chainsaw Man", tipo: ["manga", "anime"],
-    generos: ["Acción", "Terror", "Sobrenatural", "Shounen", "Drama", "Dark Fantasy"], temporadas: 2, cover: "080.jpeg",
+    generos: ["acción", "terror", "sobrenatural", "shounen", "drama", "dark fantasy"], temporadas: 2, cover: "080.jpeg",
     sinopsis: "Denji, un joven con una deuda astronómica, se fusiona con su perro demonio Pochita para convertirse en Chainsaw Man y cazar demonios para la seguridad pública.",
     urlManga: "https://tu-sitio.com/chainsaw-man-manga",
     urlAnime: "https://tu-sitio.com/chainsaw-man-anime"
   },
   {
     id: 81, titulo: "Jujutsu Kaisen", tipo: ["manga", "anime"],
-    generos: ["Acción", "Sobrenatural", "Escolar", "Shounen", "Terror", "Artes Marciales"], temporadas: 3, cover: "081.jpeg",
+    generos: ["acción", "sobrenatural", "escolar", "shounen", "terror", "artes marciales"], temporadas: 3, cover: "081.jpeg",
     sinopsis: "Yuji Itadori ingiere un dedo maldito para salvar a sus amigos y termina albergando al Rey de las Maldiciones, Sukuna, viéndose forzado a unirse a la escuela de hechicería.",
     urlManga: "https://tu-sitio.com/jujutsu-kaisen-manga",
     urlAnime: "https://tu-sitio.com/jujutsu-kaisen-anime"
   },
   {
     id: 82, titulo: "Omniscient Reader's Viewpoint", tipo: ["manhwa", "anime"],
-    generos: ["Acción", "Aventura", "Fantasía", "Psicológico", "Supervivencia", "Apocalipsis"], temporadas: 1, cover: "082.jpeg",
+    generos: ["acción", "aventura", "fantasía", "psicológico", "supervivencia", "apocalipsis"], temporadas: 1, cover: "082.jpeg",
     sinopsis: "Kim Dokja era el único lector de una novela apocalíptica. De repente, el mundo de la novela se vuelve realidad y él es el único que sabe cómo terminará la historia.",
     urlManhwa: "https://tu-sitio.com/orv-manhwa",
     urlAnime: "https://tu-sitio.com/orv-anime"
   },
   {
     id: 83, titulo: "Re:Zero kara Hajimeru Isekai Seikatsu", tipo: ["manga", "anime"],
-    generos: ["Isekai", "Drama", "Fantasía", "Psicológico", "Viaje en el Tiempo", "Misterio"], temporadas: 3, cover: "083.jpeg",
+    generos: ["isekai", "drama", "fantasía", "psicológico", "viaje en el tiempo", "misterio"], temporadas: 3, cover: "083.jpeg",
     sinopsis: "Subaru Natsuki es transportado a otro mundo donde descubre que tiene el poder de 'Regresar de la Muerte', una habilidad dolorosa que usa para salvar a sus seres queridos.",
     urlManga: "https://tu-sitio.com/re-zero-manga",
     urlAnime: "https://tu-sitio.com/re-zero-anime"
   },
   {
     id: 84, titulo: "Tensei Shitara Slime Datta Ken", tipo: ["manga", "anime"],
-    generos: ["Isekai", "Fantasía", "Aventura", "Comedia", "Magia", "Shounen"], temporadas: 3, cover: "084.jpeg",
+    generos: ["isekai", "fantasía", "aventura", "comedia", "magia", "shounen"], temporadas: 3, cover: "084.jpeg",
     sinopsis: "Satoru Mikami reencarna en otro mundo como un Slime con habilidades únicas. Bajo el nombre de Rimuru Tempest, decide crear una nación donde todos vivan en paz.",
     urlManga: "https://tu-sitio.com/tensura-manga",
     urlAnime: "https://tu-sitio.com/tensura-anime"
   },
   {
     id: 85, titulo: "Vagabond", tipo: ["manga"],
-    generos: ["Acción", "Historia", "Artes Marciales", "Seinen", "Drama", "Psicológico"], cover: "085.jpeg",
+    generos: ["acción", "historia", "artes marciales", "seinen", "drama", "psicológico"], cover: "085.jpeg",
     sinopsis: "Basada en la vida del legendario espadachín Miyamoto Musashi, narra su sangriento camino hacia la iluminación y la búsqueda de la verdadera fuerza.",
     urlManga: "https://tu-sitio.com/vagabond-manga"
   },
   {
     id: 86, titulo: "Kage no Jitsuryokusha ni Naritakute!", tipo: ["manga", "anime"],
-    generos: ["Acción", "Isekai", "Comedia", "Fantasía", "Magia", "Harem"], temporadas: 2, cover: "086.jpeg",
+    generos: ["acción", "isekai", "comedia", "fantasía", "magia", "harem"], temporadas: 2, cover: "086.jpeg",
     sinopsis: "Cid quiere ser el 'eminencia en las sombras'. Tras reencarnar, crea una organización ficticia para luchar contra un culto real que él cree que no existe.",
     urlManga: "https://tu-sitio.com/eminenza-ombra-manga",
     urlAnime: "https://tu-sitio.com/eminenza-ombra-anime"
   },
   {
     id: 87, titulo: "The Breaker", tipo: ["manhwa"],
-    generos: ["Acción", "Artes Marciales", "Drama", "Escolar", "Murim", "Shounen"], cover: "087.jpeg",
+    generos: ["acción", "artes marciales", "drama", "escolar", "murim", "shounen"], cover: "087.jpeg",
     sinopsis: "Shi-Woon es un estudiante acosado que termina convirtiéndose en el discípulo de un misterioso maestro de artes marciales que pertenece al mundo oculto del Murim.",
     urlManhwa: "https://tu-sitio.com/the-breaker-manhwa"
   },
   {
     id: 88, titulo: "Cyberpunk: Edgerunners", tipo: ["anime"],
-    generos: ["Acción", "Sci-Fi", "Cyberpunk", "Psicológico", "Crimen", "Drama"], temporadas: 1, cover: "088.jpeg",
+    generos: ["acción", "sci-fi", "cyberpunk", "psicológico", "crimen", "drama"], temporadas: 1, cover: "088.jpeg",
     sinopsis: "En una distopía plagada de corrupción e implantes cibernéticos, un chico de la calle intenta sobrevivir convirtiéndose en un Edgerunner, un mercenario fuera de la ley.",
     urlAnime: "https://tu-sitio.com/cyberpunk-anime"
   },
   {
     id: 89, titulo: "Berserk", tipo: ["manga", "anime"],
-    generos: ["Acción", "Fantasía", "Terror", "Dark Fantasy", "Seinen", "Drama"], temporadas: 2, cover: "081.jpeg",
+    generos: ["acción", "fantasía", "terror", "dark fantasy", "seinen", "drama"], temporadas: 2, cover: "081.jpeg",
     sinopsis: "Guts, el Guerrero Negro, busca venganza contra su antiguo camarada Griffith mientras lucha contra hordas de apóstoles demoníacos en un mundo cruel.",
     urlManga: "https://tu-sitio.com/berserk-manga",
     urlAnime: "https://tu-sitio.com/berserk-anime"
   },
   {
     id: 90, titulo: "Kaiju No. 8", tipo: ["manga", "anime"],
-    generos: ["Acción", "Sci-Fi", "Militar", "Shounen", "Sobrenatural", "Comedia"], temporadas: 2, cover: "090.jpeg",
+    generos: ["acción", "sci-fi", "militar", "shounen", "sobrenatural", "comedia"], temporadas: 2, cover: "090.jpeg",
     sinopsis: "Kafka Hibino, un limpiador de cadáveres de monstruos, obtiene la capacidad de transformarse en un Kaiju y decide intentar unirse de nuevo al cuerpo de defensa.",
     urlManga: "https://tu-sitio.com/kaiju-8-manga",
     urlAnime: "https://tu-sitio.com/kaiju-8-anime"
   },
   {
     id: 91, titulo: "Shangri-La Frontier", tipo: ["manga", "anime"],
-    generos: ["Acción", "Aventura", "Video Juegos", "Fantasía", "Shounen", "Comedia"], temporadas: 2, cover: "091.jpeg",
+    generos: ["acción", "aventura", "video juegos", "fantasía", "shounen", "comedia"], temporadas: 2, cover: "091.jpeg",
     sinopsis: "Rakuro es un experto en pasar juegos mediocres. Esta vez decide probar un juego AAA legendario, usando sus habilidades de 'cazador de basura' para dominar el mundo virtual.",
     urlManga: "https://tu-sitio.com/shangri-la-manga",
     urlAnime: "https://tu-sitio.com/shangri-la-anime"
   },
   {
     id: 92, titulo: "Nano Machine", tipo: ["manhwa"],
-    generos: ["Acción", "Aventura", "Ciencia Ficción", "Murim", "Artes Marciales", "Cultivo/Xianxia"], cover: "092.jpeg",
+    generos: ["acción", "aventura", "ciencia ficción", "murim", "artes marciales", "cultivo/xianxia"], cover: "092.jpeg",
     sinopsis: "Un descendiente del futuro visita al joven Cheon Yeo-Woon del culto demoníaco y le inyecta nanomáquinas en su cuerpo para cambiar su destino.",
     urlManhwa: "https://tu-sitio.com/nano-machine-manhwa"
   },
   {
     id: 93, titulo: "Blue Lock", tipo: ["manga", "anime"],
-    generos: ["Deportes", "Acción", "Shounen", "Psicológico", "Drama", "Escolar"], temporadas: 2, cover: "093.jpeg",
+    generos: ["deportes", "acción", "shounen", "psicológico", "drama", "escolar"], temporadas: 2, cover: "093.jpeg",
     sinopsis: "Japón busca al mejor delantero del mundo mediante un entrenamiento extremo en una instalación llamada Blue Lock, donde 300 delanteros compiten por sobrevivir.",
     urlManga: "https://tu-sitio.com/blue-lock-manga",
     urlAnime: "https://tu-sitio.com/blue-lock-anime"
   },
   {
     id: 94, titulo: "Hell's Paradise: Jigokuraku", tipo: ["manga", "anime"],
-    generos: ["Acción", "Aventura", "Fantasía", "Shounen", "Historia", "Sobrenatural"], temporadas: 2, cover: "094.jpeg",
+    generos: ["acción", "aventura", "fantasía", "shounen", "historia", "sobrenatural"], temporadas: 2, cover: "094.jpeg",
     sinopsis: "Un ninja condenado a muerte es enviado a una isla misteriosa para encontrar el elixir de la vida a cambio de su perdón, enfrentándose a horrores divinos.",
     urlManga: "https://tu-sitio.com/jigokuraku-manga",
     urlAnime: "https://tu-sitio.com/jigokuraku-anime"
   },
   {
     id: 95, titulo: "Overlord", tipo: ["manga", "anime"],
-    generos: ["Acción", "Isekai", "Fantasía", "Sobrenatural", "Magia", "Dark Fantasy"], temporadas: 4, cover: "095.jpeg",
+    generos: ["acción", "isekai", "fantasía", "sobrenatural", "magia", "dark fantasy"], temporadas: 4, cover: "095.jpeg",
     sinopsis: "Cuando su videojuego favorito cierra, Momonga decide quedarse conectado y es transportado al mundo real del juego como su avatar, el poderoso esqueleto Ainz Ooal Gown.",
     urlManga: "https://tu-sitio.com/overlord-manga",
     urlAnime: "https://tu-sitio.com/overlord-anime"
   },
   {
     id: 96, titulo: "Tate no Yuusha no Nariagari", tipo: ["manga", "anime"],
-    generos: ["Isekai", "Fantasía", "Acción", "Drama", "Aventura", "Shounen"], temporadas: 3, cover: "096.jpeg",
+    generos: ["isekai", "fantasía", "acción", "drama", "aventura", "shounen"], temporadas: 3, cover: "096.jpeg",
     sinopsis: "Naofumi es invocado como el Héroe del Escudo. Tras ser traicionado y despreciado, debe reconstruir su reputación desde cero con la ayuda de su esclava Raphtalia.",
     urlManga: "https://tu-sitio.com/tate-no-yuusha-manga",
     urlAnime: "https://tu-sitio.com/tate-no-yuusha-anime"
   },
   {
     id: 97, titulo: "Kingdom", tipo: ["manga", "anime"],
-    generos: ["Acción", "Historia", "Militar", "Seinen", "Drama", "Guerra"], temporadas: 5, cover: "097.jpeg",
+    generos: ["acción", "historia", "militar", "seinen", "drama", "guerra"], temporadas: 5, cover: "097.jpeg",
     sinopsis: "En la antigua China, dos huérfanos de guerra sueñan con convertirse en los grandes generales de los cielos, ayudando al rey de Qin a unificar el país.",
     urlManga: "https://tu-sitio.com/kingdom-manga",
     urlAnime: "https://tu-sitio.com/kingdom-anime"
   },
   {
     id: 98, titulo: "Hellsing Ultimate", tipo: ["manga", "anime"],
-    generos: ["Acción", "Terror", "Vampiros", "Sobrenatural", "Militar", "Seinen"], temporadas: 1, cover: "098.jpeg",
+    generos: ["acción", "terror", "vampiros", "sobrenatural", "militar", "seinen"], temporadas: 1, cover: "098.jpeg",
     sinopsis: "La organización Hellsing emplea al poderoso vampiro Alucard para proteger a Inglaterra de amenazas sobrenaturales y ejércitos de no-muertos.",
     urlManga: "https://tu-sitio.com/hellsing-manga",
     urlAnime: "https://tu-sitio.com/hellsing-anime"
   },
   {
     id: 99, titulo: "Youjo Senki (Saga of Tanya the Evil)", tipo: ["manga", "anime"],
-    generos: ["Acción", "Isekai", "Militar", "Magia", "Fantasía", "Guerra"], temporadas: 2, cover: "099.jpeg",
+    generos: ["acción", "isekai", "militar", "magia", "fantasía", "guerra"], temporadas: 2, cover: "099.jpeg",
     sinopsis: "Un asalariado ateo es reencarnado por una entidad divina en el cuerpo de una niña en medio de una guerra mágica mundial, convirtiéndose en una táctica despiadada.",
     urlManga: "https://tu-sitio.com/youjo-senki-manga",
     urlAnime: "https://tu-sitio.com/youjo-senki-anime"
   },
   {
     id: 100, titulo: "Vinland Saga", tipo: ["manga", "anime"],
-    generos: ["Acción", "Historia", "Aventura", "Drama", "Seinen", "Guerra"], temporadas: 2, cover: "100.jpeg",
+    generos: ["acción", "historia", "aventura", "drama", "seinen", "guerra"], temporadas: 2, cover: "100.jpeg",
     sinopsis: "Thorfinn, hijo de un gran guerrero vikingo, busca venganza contra el hombre que mató a su padre, viéndose envuelto en la conquista de Inglaterra.",
     urlManga: "https://tu-sitio.com/vinland-saga-manga",
     urlAnime: "https://tu-sitio.com/vinland-saga-anime"
-  },
-
-
-
-
-
-
-  // ── Agrega nuevos títulos debajo de esta línea ────────────
-  // {
-  //   id: 21, titulo: "...", tipo: "manga",
-  //   generos: ["..."], temporadas: 1, cover: "...",
-  //   sinopsis: "Descripción del título.",
-  //   urlAnime  : "https://tu-sitio.com/...",   // opcional
-  //   urlManga  : "https://tu-sitio.com/...",   // opcional
-  //   urlManhwa : "https://tu-sitio.com/...",   // opcional
-  //   urlDonghua: "https://tu-sitio.com/...",   // opcional
-  //   // url    : "https://tu-sitio.com/...",   // solo si no hay ninguno de arriba
-  // },
+  }
 ];
