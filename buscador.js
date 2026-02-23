@@ -130,7 +130,7 @@ function buildCard(item, index) {
   card.innerHTML = `
     <div class="card-cover">
       ${coverHtml}
-      <span class="card-type-badge">${item.tipo}</span>
+      <span class="card-type-badge"></span>
     </div>
     <div class="card-body">
       <div class="card-title">${item.titulo}</div>
