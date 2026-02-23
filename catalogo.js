@@ -13,12 +13,18 @@ export const CATALOG = [
     urlManga: "https://tu-sitio.com/kimi-ni-todoke-manga",
     urlAnime: "https://tu-sitio.com/kimi-ni-todoke-anime"
   },
-  {
-    id: 3, titulo: "Ibeon Saengdo Jal Butakhae (See You in My 19th Life)", tipo: ["manhwa"],
-    generos: ["romance", "drama", "sobrenatural"], cover: "003.jpeg",
-    sinopsis: "Ban Ji-eum puede recordar todas sus vidas pasadas. Tras morir trágicamente en su vida 18, dedica la 19 a reencontrarse con su amor de la infancia.",
-    urlManhwa: "https://tu-sitio.com/19th-life-manhwa"
-  },
+{
+  id: 3, 
+  titulo: "Kyokai no Kanata (Beyond the Boundary)", 
+  tipo: ["anime", "manga", "pelicula"],
+  generos: ["fantasia", "romance", "sobrenatural", "accion"], 
+  temporadas: 1, 
+  cover: "003.jpeg",
+  sinopsis: "Akihito Kanbara es un chico inmortal mitad humano y mitad guerrero espiritual. Su vida cambia cuando conoce a Mirai Kuriyama, una chica que tiene la habilidad de manipular su propia sangre para crear armas.",
+  urlManga: "#", 
+  urlAnime: "#"
+},
+
   {
     id: 4, titulo: "Meng Qi Shi Shen (Cinderella Chef)", tipo: ["donghua"],
     generos: ["romance", "comedia", "historico"], temporadas: 3, cover: "004.jpeg",
@@ -40,10 +46,10 @@ export const CATALOG = [
     urlAnime: "https://tu-sitio.com/pseudo-harem-anime"
   },
   {
-    id: 7, titulo: " 작전명 순정 (Operation: True Love)", tipo: ["manhwa"],
-    generos: ["romance", "drama", "escolar"], cover: "007.jpeg",
-    sinopsis: "Su-ae descubre que su vida es controlada por un sistema de 'cantidad de amor'. Con la ayuda de un misterioso teléfono, intentará cambiar su destino amoroso.",
-    urlManhwa: "https://tu-sitio.com/operation-true-love"
+    id: 7, titulo: "Aura: Maryuuin Kouga Saigo no Tatakai", tipo: ["pelicula", "manga"],
+    generos: ["drama", "romance", "escolar"], temporadas: 0, cover: "007.jpeg",
+    sinopsis: "Ichiro Sato intenta dejar atrás sus delirios de fantasía, pero su vida cambia al conocer a una chica que cree ser una investigadora de otro mundo.",
+    urlManga: "#", urlAnime: "#"
   },
   {
     id: 8, titulo: "Suki na Ko ga Megane wo Wasureta", tipo: ["manga", "anime"],
@@ -72,10 +78,10 @@ export const CATALOG = [
     urlAnime: "https://tu-sitio.com/fuufu-ijou-anime"
   },
   {
-    id: 12, titulo: "Eojjeoda Bonikka Gyeolhon (Maybe Meant to Be)", tipo: ["manhwa"],
-    generos: ["romance", "comedia", "adulto"], temporadas: 0, cover: "012.jpeg",
-    sinopsis: "Cansada de la presión de sus padres por casarse, una mujer desempleada le propone matrimonio de broma a su amigo de la infancia, y él acepta.",
-    urlManhwa: "https://tu-sitio.com/maybe-meant-to-be"
+    id: 12, titulo: "Tenki no Ko (El tiempo contigo)", tipo: ["pelicula", "manga"],
+    generos: ["drama", "romance", "fantasia"], temporadas: 1, cover: "012.jpeg",
+    sinopsis: "Un estudiante de secundaria que huyó a Tokio se hace amigo de una chica que parece poder manipular el clima a su voluntad.",
+    urlManga: "#", urlAnime: "#"
   },
   {
     id: 13, titulo: "Tomo-chan wa Onnanoko!", tipo: ["manga", "anime"],
@@ -99,10 +105,10 @@ export const CATALOG = [
     urlAnime: "https://tu-sitio.com/otonari-no-tenshi-anime"
   },
   {
-    id: 16, titulo: "Eoneu Nal Gongjuga Doeeo Beoryeotda (Who Made Me a Princess)", tipo: ["manhwa"],
-    generos: ["romance", "fantasia", "drama"], temporadas: 0, cover: "016.jpeg",
-    sinopsis: "Una mujer reencarna en la princesa de una novela que está destinada a morir a manos de su propio padre. Su misión es ganarse su afecto.",
-    urlManhwa: "https://tu-sitio.com/princess-athansia"
+    id: 16, titulo: "Netoge no Yome wa Onnanoko ja Nai to Omotta?", tipo: ["anime", "manga"],
+    generos: ["comedia", "romance", "escolar", "ecchi"], temporadas: 1, cover: "016.jpeg",
+    sinopsis: "Hideki Nishimura se confiesa a una chica en un juego en línea, solo para descubrir que ella es un chico en la vida real... o eso creía.",
+    urlManga: "#", urlAnime: "#"
   },
   {
     id: 17, titulo: "Maou no Ore ga Dorei Elf wo Yome ni Shitanda ga, Dou Medereba Ii?", tipo: ["manga", "anime"],
@@ -112,16 +118,16 @@ export const CATALOG = [
     urlAnime: "https://tu-sitio.com/archdemon-dilemma-anime"
   },
   {
-    id: 18, titulo: "Liang Bu Yi (No Doubt In Us)", tipo: ["donghua"],
-    generos: ["romance", "comedia", "historico"], temporadas: 2, cover: "018.jpeg",
-    sinopsis: "Un emperador y su esposa guerrera intercambian cuerpos por accidente. Deben aprender a vivir la vida del otro mientras mantienen las apariencias.",
-    urlDonghua: "https://tu-sitio.com/no-doubt-in-us"
+    id: 18, titulo: "Oresuki: Ore wo Suki Nano wa Omaedake ka yo", tipo: ["anime", "manga"],
+    generos: ["comedia", "romance", "escolar"], temporadas: 1, cover: "018.jpeg",
+    sinopsis: "Amatsuyu Kisaragi espera confesiones de amor de dos chicas hermosas, pero las cosas no salen como él planeaba en el famoso banco del parque.",
+    urlManga: "#", urlAnime: "#"
   },
   {
-    id: 19, titulo: "Sui-en (Sign)", tipo: ["manhwa"],
-    generos: ["romance", "recuentos de la vida"], temporadas: 0, cover: "019.jpeg",
-    sinopsis: "Kang Soo-hwa empieza a trabajar en una cafetería donde el dueño es sordo. A través del lenguaje de señas, surge una conexión especial.",
-    urlManhwa: "https://tu-sitio.com/sign-manhwa"
+    id: 19, titulo: "Kimi no Nawa (Your Name)", tipo: ["pelicula", "manga"],
+    generos: ["drama", "romance", "sobrenatural"], temporadas:1, cover: "019.jpeg",
+    sinopsis: "Dos adolescentes que no se conocen de nada descubren un día que pueden intercambiar sus cuerpos, creando un vínculo que trasciende el tiempo.",
+    urlManga: "#", urlAnime: "#"
   },
   {
     id: 20, titulo: "Wotaku ni Koi wa Muzukashii", tipo: ["manga", "anime"],
@@ -165,10 +171,10 @@ export const CATALOG = [
     urlAnime: "https://tu-sitio.com/ouran-host-club-anime"
   },
   {
-    id: 26, titulo: "Positive-ly Yours", tipo: ["manhwa"],
-    generos: ["romance", "drama"], temporadas: 0, cover: "026.jpeg",
-    sinopsis: "Tras una noche de despecho, Hee-won queda embarazada de un desconocido. Él le propone matrimonio y apoyo total.",
-    urlManhwa: "https://tu-sitio.com/positively-yours-manhwa"
+    id: 26 ,titulo: "Oregairu (Yahari Ore no Seishun Love Come wa Machigatteiru)", tipo: ["anime", "manga"],
+    generos: ["romance", "comedia", "escolar", "drama"], temporadas: 3, cover: "026.jpeg",
+    sinopsis: "Hachiman Hikigaya es un cínico solitario obligado a unirse al Club de Servicio, donde deberá ayudar a otros junto a la fría Yukino Yukinoshita.",
+    urlManga: "#", urlAnime: "#"
   },
   {
     id: 27, titulo: "Suki tte Ii na yo.", tipo: ["manga", "anime"],
