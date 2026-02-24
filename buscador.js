@@ -1,411 +1,189 @@
 /**
  * ============================================================
- *  BUSCADOR DE SERIES - buscador.js
+ *  catalogo.js — Base de datos de títulos
  * ============================================================
- *  Filtros soportados:
- *   - Nombre (texto libre)
- *   - Tipo: manga / manhwa / donghua
- *   - Géneros: accion, romance, fantasia, terror, comedia,
- *              sci-fi, drama, sobrenatural
- *   - Temporadas (rango mín–máx)
+ *  Los datos se cargan automáticamente desde Google Sheets.
+ *  Para agregar títulos, edita directamente tu hoja de cálculo.
  *
- *  El catálogo vive en catalogo.js — edítalo sin tocar este archivo.
+ *  Columnas esperadas en el Sheet (fila 1 = encabezados):
+ *  id | titulo | tipo | generos | temporadas | cover |
+ *  sinopsis | urlManga | urlAnime | urlManhwa | urlDonghua | urlPelicula
+ *
+ *  - "tipo" y "generos" van separados por coma: anime,manga
+ *  - "cover" puede ser nombre de archivo (001.jpeg) o URL completa
  * ============================================================
  */
 
-// ─────────────────────────────────────────────
-//  1.  CATÁLOGO  (importado desde catalogo.js)
-// ─────────────────────────────────────────────
-import { CATALOG } from "./catalogo.js";
+// ── URL de tu Google Sheet publicado ──────────────────────────
+// Tu link original termina en /pubhtml — lo convertimos a CSV
+const SHEET_PUBHTML = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5dM8y0r6LSGZpI3E1wKgl3GFD0c_14lzeAuMEgNZgNdAMZjXcTeyvcDvjHFMx-MsggDUVEi9Vv4yr/pubhtml";
 
-// ─────────────────────────────────────────────
-//  2.  ESTADO DE FILTROS
-// ─────────────────────────────────────────────
-const filters = {
-  query: "",
-  tipo: "",
-  genero: "",
-  temporadasMin: 1,
-  temporadasMax: 10,
-};
+const SHEET_ID  = SHEET_PUBHTML.match(/\/d\/e\/([^/]+)/)?.[1] ?? "";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
 
-// ─────────────────────────────────────────────
-//  3.  REFERENCIAS DOM
-// ─────────────────────────────────────────────
-const searchInput    = document.getElementById("searchInput");
-const clearBtn       = document.getElementById("clearBtn");
-const resultsGrid    = document.getElementById("resultsGrid");
-const emptyState     = document.getElementById("emptyState");
-const resultCount    = document.getElementById("resultCount");
-const temporadasMin  = document.getElementById("temporadasMin");
-const temporadasMax  = document.getElementById("temporadasMax");
-const temporadasMinV = document.getElementById("temporadasMinVal");
-const temporadasMaxV = document.getElementById("temporadasMaxVal");
-const resetBtn       = document.getElementById("resetFilters");
-
-// Modal
-const modal        = document.getElementById("modal");
-const modalClose   = document.getElementById("modalClose");
-const modalCover   = document.getElementById("modalCover");
-const modalBadge   = document.getElementById("modalBadge");
-const modalTitle   = document.getElementById("modalTitle");
-const modalTags    = document.getElementById("modalTags");
-const modalSinopsis= document.getElementById("modalSinopsis");
-const modalSeasons = document.getElementById("modalSeasons");
-const modalBtns    = document.getElementById("modalBtns");
-
-// ─────────────────────────────────────────────
-//  4.  MOTOR DE BÚSQUEDA
-// ─────────────────────────────────────────────
-
-/**
- * Normaliza texto: minúsculas + sin tildes.
- */
-function normalize(str) {
-  return str
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
-
-/**
- * Aplica todos los filtros al catálogo y devuelve los resultados.
- */
-function search() {
-  const q = normalize(filters.query.trim());
-
-  return CATALOG.filter(item => {
-    // 1. Filtro por nombre
-    if (q && !normalize(item.titulo).includes(q)) return false;
-
-// DESPUÉS
-if (filters.tipo) {
-  const tipos = Array.isArray(item.tipo) ? item.tipo : [item.tipo];
-  if (!tipos.includes(filters.tipo)) return false;
-}
-
-    // 3. Filtro por género (el ítem debe incluir ese género)
-    if (filters.genero && !item.generos.includes(filters.genero)) return false;
-
-    // 4. Filtro por rango de temporadas
-    const maxVal = filters.temporadasMax === 10 ? Infinity : filters.temporadasMax;
-    if (item.temporadas < filters.temporadasMin) return false;
-    if (item.temporadas > maxVal) return false;
-
-    return true;
-  });
-}
-
-// ─────────────────────────────────────────────
-//  5.  RENDERIZADO
-// ─────────────────────────────────────────────
-
-/**
- * Devuelve true si el valor de cover es una imagen
- * (URL externa o ruta local con extensión de imagen).
- */
-function isImage(cover) {
-  if (!cover) return false;
-  return /\.(jpe?g|png|webp|gif|avif|svg)(\?.*)?$/i.test(cover)
-      || cover.startsWith("http")
-      || cover.startsWith("/")
-      || cover.startsWith("./");
-}
-
-function buildCard(item, index) {
-  
-  const card = document.createElement("div");
-  card.className = "card";
-  card.style.animationDelay = `${index * 40}ms`;
-
-  const coverHtml = isImage(item.cover)
-    ? `<img class="card-cover-img" src="${item.cover}" alt="${item.titulo}" loading="lazy" />`
-    : `<span>${item.cover || " "}</span>`;
-
-  const genresHtml = item.generos
-    .slice(0, 3)
-    .map(g => `<span class="card-genre">${g}</span>`)
-    .join("");
-
-  card.innerHTML = `
-    <div class="card-cover">
-      ${coverHtml}
-      <span class="card-type-badge"></span>
-    </div>
-    <div class="card-body">
-      <div class="card-title">${item.titulo}</div>
-      <div class="card-meta">${genresHtml}</div>
-      <div class="card-seasons">  ${item.temporadas} temp${item.temporadas !== 1 ? "." : "."}</div>
-    </div>
-  `;
-
-  card.addEventListener("click", () => openModal(item));
-  return card;
-}
-
-function render() {
-  const results = search();
-
-  // Actualizar contador
-  resultCount.textContent = `${results.length} resultado${results.length !== 1 ? "s" : ""}`;
-
-  // Limpiar grid
-  resultsGrid.innerHTML = "";
-
-  if (results.length === 0) {
-    emptyState.classList.remove("hidden");
-    resultsGrid.classList.add("hidden");
-  } else {
-    emptyState.classList.add("hidden");
-    resultsGrid.classList.remove("hidden");
-    const fragment = document.createDocumentFragment();
-    results.forEach((item, i) => fragment.appendChild(buildCard(item, i)));
-    resultsGrid.appendChild(fragment);
-  }
-}
-
-// ─────────────────────────────────────────────
-//  6.  MODAL
-// ─────────────────────────────────────────────
-
-function openModal(item) {
-  // Portada
-  modalCover.innerHTML = isImage(item.cover)
-    ? `<img src="${item.cover}" alt="${item.titulo}" />`
-    : item.cover || " ";
-
-  // Badge tipo
-  modalBadge.textContent = item.tipo;
-
-  // Título
-  modalTitle.textContent = item.titulo;
-
-  // Tags géneros
-  modalTags.innerHTML = item.generos
-    .map(g => `<span class="modal-tag">${g}</span>`)
-    .join("");
-
-  // Sinopsis
-  modalSinopsis.textContent = item.sinopsis || "Sin sinopsis disponible.";
-
-  // Temporadas
-  const t = item.temporadas;
-  modalSeasons.textContent = `  ${t} temporada${t !== 1 ? "s" : ""}`;
-
-  // ── Botones dinámicos por formato disponible ──────────────
-  // Mapa: clave del objeto → etiqueta visible + clase CSS + emoji
-  const FORMATOS = [
-    { key: "urlAnime",   label: "Ver Anime",   clase: "modal-btn--anime",   icon: " " },
-    { key: "urlManga",   label: "Ver Manga",   clase: "modal-btn--manga",   icon: " " },
-    { key: "urlManhwa",  label: "Ver Manhwa",  clase: "modal-btn--manhwa",  icon: " " },
-    { key: "urlDonghua", label: "Ver Donghua", clase: "modal-btn--donghua", icon: " " },
-    // fallback: si el título solo tiene un "url" genérico
-    { key: "url",        label: "Ver",         clase: "modal-btn--ver",     icon: " "  },
-  ];
-
-  modalBtns.innerHTML = "";
-
-  // Comprueba si hay alguna URL específica de formato
-  const tieneEspecificos = FORMATOS.slice(0, 4).some(f => item[f.key]);
-
-  FORMATOS.forEach(({ key, label, clase, icon }) => {
-    // Si hay URLs específicas, omite el fallback "url" genérico
-    if (key === "url" && tieneEspecificos) return;
-    if (!item[key]) return;
-
-    const a = document.createElement("a");
-    a.className = `modal-btn ${clase}`;
-    a.href      = item[key];
-    a.target    = "_blank";
-    a.rel       = "noopener";
-    a.innerHTML = `${icon} ${label}`;
-    modalBtns.appendChild(a);
-  });
-
-  // Si no hay ninguna URL definida, muestra botón deshabilitado
-  if (modalBtns.children.length === 0) {
-    const span = document.createElement("span");
-    span.className = "modal-btn modal-btn--ver";
-    span.style.opacity = "0.4";
-    span.style.cursor  = "default";
-    span.textContent   = "Próximamente";
-    modalBtns.appendChild(span);
-  }
-
-  // Abrir
-  modal.classList.add("open");
-  document.body.style.overflow = "hidden";
-}
-
-function closeModal() {
-  modal.classList.remove("open");
-  document.body.style.overflow = "";
-}
-
-// Cerrar con el botón ✕
-modalClose.addEventListener("click", closeModal);
-
-// Cerrar al tocar el backdrop (fuera de la caja)
-modal.addEventListener("click", e => {
-  if (e.target === modal) closeModal();
-});
-
-// Cerrar con Escape
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeModal();
-});
-
-// ─────────────────────────────────────────────
-//  7.  EVENT LISTENERS
-// ─────────────────────────────────────────────
-
-// Búsqueda por texto (debounce 200ms)
-let debounceTimer;
-searchInput.addEventListener("input", () => {
-  filters.query = searchInput.value;
-  clearBtn.classList.toggle("visible", filters.query.length > 0);
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(render, 200);
-});
-
-// Limpiar input
-clearBtn.addEventListener("click", () => {
-  searchInput.value = "";
-  filters.query = "";
-  clearBtn.classList.remove("visible");
-  searchInput.focus();
-  render();
-});
-
-// Tags de tipo
-document.getElementById("tipoFilter").addEventListener("click", e => {
-  const tag = e.target.closest(".tag");
-  if (!tag) return;
-  document.querySelectorAll("#tipoFilter .tag").forEach(t => t.classList.remove("active"));
-  tag.classList.add("active");
-  filters.tipo = tag.dataset.value;
-  render();
-});
-
-// Tags de género
-document.getElementById("generoFilter").addEventListener("click", e => {
-  const tag = e.target.closest(".tag");
-  if (!tag) return;
-  document.querySelectorAll("#generoFilter .tag").forEach(t => t.classList.remove("active"));
-  tag.classList.add("active");
-  filters.genero = tag.dataset.value;
-  render();
-});
-
-// Slider temporadas mínimo
-temporadasMin.addEventListener("input", () => {
-  let val = parseInt(temporadasMin.value);
-  if (val > parseInt(temporadasMax.value)) {
-    temporadasMax.value = val;
-    filters.temporadasMax = val;
-  }
-  filters.temporadasMin = val;
-  temporadasMinV.textContent = val;
-  updateMaxLabel();
-  render();
-});
-
-// Slider temporadas máximo
-temporadasMax.addEventListener("input", () => {
-  let val = parseInt(temporadasMax.value);
-  if (val < parseInt(temporadasMin.value)) {
-    temporadasMin.value = val;
-    filters.temporadasMin = val;
-    temporadasMinV.textContent = val;
-  }
-  filters.temporadasMax = val;
-  updateMaxLabel();
-  render();
-});
-
-function updateMaxLabel() {
-  const val = parseInt(temporadasMax.value);
-  temporadasMaxV.textContent = val >= 10 ? "10+" : val;
-}
-
-// Reset de filtros
-resetBtn.addEventListener("click", () => {
-  // Texto
-  searchInput.value = "";
-  filters.query = "";
-  clearBtn.classList.remove("visible");
-
-  // Tags tipo
-  filters.tipo = "";
-  document.querySelectorAll("#tipoFilter .tag").forEach((t, i) => {
-    t.classList.toggle("active", i === 0);
-  });
-
-  // Tags género
-  filters.genero = "";
-  document.querySelectorAll("#generoFilter .tag").forEach((t, i) => {
-    t.classList.toggle("active", i === 0);
-  });
-  // Colapsar géneros al resetear
-  generoFilter.classList.remove("genres-expanded");
-  generoFilter.classList.add("genres-collapsed");
-  genresToggle.textContent = "Ver todos ▾";
-
-  // Sliders
-  temporadasMin.value = 1;
-  temporadasMax.value = 10;
-  filters.temporadasMin = 1;
-  filters.temporadasMax = 10;
-  temporadasMinV.textContent = "1";
-  temporadasMaxV.textContent = "10+";
-
-  render();
-});
-
-// ─────────────────────────────────────────────
-//  8.  TOGGLE DE GÉNEROS
-// ─────────────────────────────────────────────
-const genresToggle = document.getElementById("genresToggle");
-const generoFilter = document.getElementById("generoFilter");
-
-genresToggle.addEventListener("click", () => {
-  const expanded = generoFilter.classList.toggle("genres-expanded");
-  generoFilter.classList.toggle("genres-collapsed", !expanded);
-  genresToggle.textContent = expanded ? "Ver menos ▴" : "Ver todos ▾";
-});
-
-// ─────────────────────────────────────────────
-//  9.  INICIALIZACIÓN
-// ─────────────────────────────────────────────
-render();
-
-// ─────────────────────────────────────────────
-//  10. API PÚBLICA
-//      Usa esto para integrar con tu back-end.
-//      Ejemplo: SearchEngine.loadCatalog(misAnimes)
-// ─────────────────────────────────────────────
-window.SearchEngine = {
-  /**
-   * Reemplaza el catálogo en memoria y vuelve a renderizar.
-   * @param {Array} data  Array de objetos con la misma forma que CATALOG
-   */
-  loadCatalog(data) {
-    CATALOG.length = 0;
-    CATALOG.push(...data);
-    render();
+// ── Fallback local (se usa si Sheets falla o estás offline) ───
+const CATALOG_LOCAL = [
+  {
+    id: 1, titulo: "Boku no Kokoro no Yabai Yatsu", tipo: ["manga", "anime"],
+    generos: ["romance", "comedia", "escolar"], temporadas: 2, cover: "001.jpeg",
+    sinopsis: "Kyotaro Ichikawa es un chico solitario que fantasea con asesinar a la chica popular de la clase, pero pronto descubre que sus sentimientos son muy diferentes.",
+    urlManga: "https://www.leercapitulo.co/leer/5ungi75ry5/boku-no-kokoro-no-yabai-yatsu/1/",
+    urlAnime: "https://latino.solo-latino.com/es/detail/drama/8qev2R638st7yupzrp3dC-The-Dangers-in-My-Heart/1"
   },
-
-  /**
-   * Agrega entradas al catálogo sin reemplazarlo.
-   * @param {Array} data
-   */
-  appendCatalog(data) {
-    CATALOG.push(...data);
-    render();
+ {
+    id: 2, titulo: "Suki na Ko ga Megane wo Wasureta", tipo: ["manga", "anime"],
+    generos: ["romance", "comedia", "escolar"], temporadas: 1, cover: "002.jpeg",
+    sinopsis: "Komura siempre intenta ayudar a su compañera de asiento, Mie, quien constantemente olvida sus gafas y termina acercándose demasiado para poder ver.",
+    urlManga: "https://www.leercapitulo.co/leer/tku8jvz85g/sukinako-ga-megane-wo-wasureta/1/",
+    urlAnime: "https://flixlat.com/es/detail/drama/ajXNJssIk4VZCNX5R4FFG-The-Girl-I-Like-Forgot-Her-Glasses"
   },
+{
+  id: 3, 
+  titulo: "Kyokai no Kanata (Beyond the Boundary)", 
+  tipo: ["anime", "manga", "pelicula"],
+  generos: ["fantasia", "romance", "sobrenatural", "accion"], 
+  temporadas: 1, 
+  cover: "003.jpeg",
+  sinopsis: "Akihito Kanbara es un chico inmortal mitad humano y mitad guerrero espiritual. Su vida cambia cuando conoce a Mirai Kuriyama, una chica que tiene la habilidad de manipular su propia sangre para crear armas.",
+  urlManga: "#", 
+  urlAnime: "#"
+},
 
-  /** Devuelve los resultados actuales (por si necesitas procesarlos fuera). */
-  getResults() {
-    return search();
+  {
+    id: 4, titulo: "Meng Qi Shi Shen (Cinderella Chef)", tipo: ["donghua"],
+    generos: ["romance", "comedia", "historico"], temporadas: 3, cover: "004.jpeg",
+    sinopsis: "Una joven chef viaja en el tiempo a la antigua China. Es secuestrada por bandidos y debe usar su ingenio y cocina para conquistar el corazón de su captor.",
+    urlDonghua: "https://tu-sitio.com/cinderella-chef"
   },
-};
+  {
+    id: 5, titulo: "Sono Bisque Doll wa Koi wo Suru", tipo: ["manga", "anime"],
+    generos: ["romance", "comedia", "slice-of-life"], temporadas: 1, cover: "005.jpeg",
+    sinopsis: "Wakana Gojo, un chico tímido que hace muñecas Hina, termina ayudando a la hermosa Marin Kitagawa a cumplir su sueño de hacer cosplay.",
+    urlManga: "https://www.leercapitulo.co/leer/txy8952tuk/sono-bisque-doll-wa-koi-wo-suru/1/",
+    urlAnime: "https://tu-sitio.com/bisque-doll-anime"
+  },
+  {
+    id: 6, titulo: "Giji Harem", tipo: ["manga", "anime"],
+    generos: ["romance", "comedia", "escolar"], temporadas: 1, cover: "006.jpeg",
+    sinopsis: "Nijakura es una chica del club de teatro que usa sus dotes de actuación para interpretar diferentes personalidades y darle a su senpai un 'harem'.",
+    urlManga: "https://www.leercapitulo.co/leer/saxtbe43y1/pseudo-harem/1/",
+    urlAnime: "https://tu-sitio.com/pseudo-harem-anime"
+  },
+  {
+    id: 7, titulo: "Aura: Maryuuin Kouga Saigo no Tatakai", tipo: ["pelicula", "manga"],
+    generos: ["drama", "romance", "escolar"], temporadas: 0, cover: "007.jpeg",
+    sinopsis: "Ichiro Sato intenta dejar atrás sus delirios de fantasía, pero su vida cambia al conocer a una chica que cree ser una investigadora de otro mundo.",
+    urlManga: "#", urlAnime: "#"
+  },
+   {
+    id: 8, titulo: "Kimi ni Todoke", tipo: ["manga", "anime"],
+    generos: ["romance", "drama", "escolar"], temporadas: 3, cover: "008.jpeg",
+    sinopsis: "Sawako, apodada 'Sadako' por su parecido con la niña de El Aro, intenta hacer amigos y encuentra el amor en el chico más popular de la escuela.",
+    urlManga: "https://tu-sitio.com/kimi-ni-todoke-manga",
+    urlAnime: "https://tu-sitio.com/kimi-ni-todoke-anime"
+  },
+    {
+    id: 9, titulo: "Make Heroine ga Oosugiru!", tipo: ["manga", "anime"],
+    generos: ["romance", "comedia", "escolar"], temporadas: 1, cover: "009.jpeg",
+    sinopsis: "Nukumizu es un chico común que termina presenciando cómo varias chicas populares de su escuela son rechazadas por sus respectivos intereses amorosos.",
+    urlManga: "https://tu-sitio.com/makeine-manga",
+    urlAnime: "https://tu-sitio.com/makeine-anime"
+  },
+  {
+    id: 10, titulo: "Ao no Hako", tipo: ["manga", "anime"],
+    generos: ["romance", "deportes", "escolar"], temporadas: 1, cover: "010.jpeg",
+    sinopsis: "Taiki admira a Chinatsu desde lejos. Tras un giro del destino, ella termina viviendo en su casa, iniciando una convivencia llena de sentimientos y deportes.",
+    urlManga: "https://tu-sitio.com/blue-box-manga",
+    urlAnime: "https://tu-sitio.com/blue-box-anime"
+  },
+  {
+    id: 11, titulo: "Fuufu Ijou, Koibito Miman.", tipo: ["manga", "anime"],
+    generos: ["romance", "comedia", "escolar"], temporadas: 1, cover: "011.jpeg",
+    sinopsis: "En una práctica escolar de 'entrenamiento matrimonial', Jirou es emparejado con la popular Akari, mientras sus respectivos intereses amorosos están juntos.",
+    urlManga: "https://www.leercapitulo.co/leer/toc6p5bxsw/fuufu-ijou-koibito-miman/1/",
+    urlAnime: "https://tu-sitio.com/fuufu-ijou-anime"
+  },
+  {
+    id: 12, titulo: "Tenki no Ko (El tiempo contigo)", tipo: ["pelicula", "manga"],
+    generos: ["drama", "romance", "fantasia"], temporadas: 1, cover: "012.jpeg",
+    sinopsis: "Un estudiante de secundaria que huyó a Tokio se hace amigo de una chica que parece poder manipular el clima a su voluntad.",
+    urlManga: "#", urlAnime: "#"
+  },
+];
+
+// ─────────────────────────────────────────────
+//  Parser CSV (respeta comas dentro de "...")
+// ─────────────────────────────────────────────
+function parseCSVLine(line) {
+  const result = [];
+  let current  = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') {
+      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (char === "," && !inQuotes) {
+      result.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+// ─────────────────────────────────────────────
+//  Convierte fila CSV → objeto del catálogo
+// ─────────────────────────────────────────────
+function parseRow(headers, values) {
+  const row = {};
+  // Normaliza headers a minúsculas para evitar errores de mayúsculas
+  headers.forEach((h, i) => { row[h.trim().toLowerCase()] = (values[i] ?? "").trim(); });
+
+  const splitList = val => val
+    ? val.split(",").map(s => s.trim()).filter(Boolean)
+    : [];
+
+  return {
+    id          : Number(row.id) || 0,
+    titulo      : row.titulo      || "",
+    tipo        : splitList(row.tipo),
+    generos     : splitList(row.generos),
+    temporadas  : Number(row.temporadas) || 0,
+    cover       : row.cover       || "",
+    sinopsis    : row.sinopsis    || "Sin sinopsis disponible.",
+    urlManga    : row.urlmanga    || null,
+    urlAnime    : row.urlanime    || null,
+    urlManhwa   : row.urlmanhwa   || null,
+    urlDonghua  : row.urldonghua  || null,
+    urlPelicula : row.urlpelicula || null,
+    url         : row.url         || null,
+  };
+}
+
+// ─────────────────────────────────────────────
+//  Carga el catálogo: Sheets primero, local si falla
+// ─────────────────────────────────────────────
+export async function loadCatalog() {
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const text  = await res.text();
+    const lines = text.trim().split("\n").filter(l => l.trim());
+    if (lines.length < 2) throw new Error("Sheet vacío");
+
+    const headers = parseCSVLine(lines[0]);
+    const catalog = lines.slice(1).map(line => parseRow(headers, parseCSVLine(line)));
+
+    console.log(`Sheets: ${catalog.length} títulos cargados`);
+    return catalog;
+
+  } catch (err) {
+    console.warn(`Sheets no disponible (${err.message}). Usando catálogo local.`);
+    return CATALOG_LOCAL;
+  }
+}
