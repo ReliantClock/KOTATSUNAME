@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KOTATSUNAME - Libros y Relatos</title>
+  <link rel="stylesheet" href="buscador.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Ajuste rápido para el botón de navegación en esta página */
+    .search-bar { display: flex; align-items: center; gap: 10px; }
+    .nav-btn { 
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0);
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.8rem;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
+      transition: 0.3s;
+    }
+    .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="wrapper">
+    <header class="header">
+      <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
+      <p class="tagline">Crónicas, relatos y leyendas originales</p>
+    </header>
+
+    <div class="search-bar">
+      <span class="search-icon"></span>
+      <input type="text" id="searchInput" placeholder="Buscar por título o autor..." autocomplete="off" />
+      <button id="clearBtn" class="clear-btn" title="Limpiar">✕</button>
+    
+    </div>
+    
+
+    <div class="filters-panel">
+
+      <div class="filter-group">
+        <div class="filter-label-row">
+          <label class="filter-label">Género Literario</label>
+          <button class="genres-toggle" id="genresToggle">Ver todos ▾</button>
+        </div>
+        <div class="tag-group genres-collapsed" id="generoFilter">
+          <button class="tag active" data-filter="genero" data-value="">Todos</button>
+           <button class="tag" data-filter="genero" data-value="romance">Romance</button>
+          <button class="tag" data-filter="genero" data-value="fantasía">Fantasía</button>
+         <button class="tag" data-filter="genero" data-value="otro-mundo">Otro Mundo</button>
+          <button class="tag" data-filter="genero" data-value="terror">Terror</button>
+          <button class="tag" data-filter="genero" data-value="acción">Acción</button>
+          <button class="tag" data-filter="genero" data-value="misterio">Misterio</button>
+          <button class="tag" data-filter="genero" data-value="drama">Drama</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="aventura">Aventura</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="psicológico">Psicológico</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="one-shot">One-shot</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="poesía">Poesía</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="ciencia-ficción">Sci-Fi</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Extensión (Capítulos)</label>
+        <div class="range-row">
+          <span class="range-label">Mín</span>
+          <input type="range" id="capsMin" min="1" max="50" value="1" />
+          <span id="capsMinVal" class="range-val">1</span>
+          <span class="range-label">Máx</span>
+          <input type="range" id="capsMax" min="1" max="50" value="50" />
+          <span id="capsMaxVal" class="range-val">50+</span>
+        </div>
+      </div>
+
+      <button id="resetFilters" class="reset-btn">↺ Resetear Biblioteca</button>
+      <a href="index.html" class="nav-btn">SERIES</a>
+      
+    </div>
+    
+
+    <div class="results-header">
+      <span id="resultCount" class="result-count">0 historias encontradas</span>
+    </div>
+
+    <div id="resultsGrid" class="results-grid"></div>
+
+    <div id="emptyState" class="empty-state hidden">
+      <span class="empty-icon">📖</span>
+      <p>No se encontraron relatos en los archivos...</p>
+    </div>
+  </div>
+
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose">✕</button>
+
+      <div class="modal-cover" id="modalCover"></div>
+
+      <div class="modal-content">
+        <div class="modal-badge" id="modalBadge">Escrito Original</div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+
+        <div class="modal-tags" id="modalTags"></div>
+
+        <p class="modal-sinopsis" id="modalSinopsis"></p>
+
+        <div class="modal-footer">
+          <span class="modal-seasons" id="modalSeasons"></span> <div class="modal-btns" id="modalBtns">
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="readerView" class="reader-container hidden">
+  <div class="reader-content">
+    <button id="closeReader" class="nav-btn">✕ Volver a la Biblioteca</button>
+    
+    <div class="reader-header">
+      <div id="readerCover" class="reader-mini-cover"></div>
+      <div class="reader-info">
+        <h2 id="readerTitle"></h2>
+        <p id="readerAuthor"></p>
+        <div id="readerTags" class="modal-tags"></div>
+        <p><strong>Estado:</strong> <span id="readerStatus">En emisión</span></p>
+      </div>
+    </div>
+
+    <hr class="separator">
+    <h3>Sinopsis</h3>
+    <div id="readerSinopsis" class="reader-text-area"></div>
+
+    <hr class="separator">
+    <h3>Lista de Capítulos</h3>
+    <div id="chapterList" class="chapter-list">
+      </div>
+  </div>
+</div>
+
+
+<div id="textViewer" class="text-viewer hidden">
+  <div class="text-viewer-nav">
+    <button id="closeViewer" class="nav-btn">✕ Salir de la lectura</button>
+    <div class="reading-controls">
+      <button id="decreaseFont" class="control-btn">A-</button>
+      <button id="increaseFont" class="control-btn">A+</button>
+    </div>
+  </div>
+  
+  <div class="reading-content">
+    <h1 id="viewerTitle">Título del Capítulo</h1>
+    <div id="viewerBody" class="viewer-body">
+      </div>
+    <div class="viewer-footer">
+      <p>Fin del capítulo</p>
+      <button id="backToChapters" class="modal-btn modal-btn--ver">Volver al índice</button>
+    </div>
+  </div>
+</div>
+
+
+
+  <script type="module" src="escritos_buscador.js"></script>
+
+  <script>
+    // Pequeño script para el toggle de géneros (ya que es visual)
+    const toggle = document.getElementById('genresToggle');
+    const container = document.getElementById('generoFilter');
+    if(toggle) {
+      toggle.addEventListener('click', () => {
+        const isCollapsed = container.classList.toggle('genres-collapsed');
+        toggle.textContent = isCollapsed ? 'Ver todos ▾' : 'Ver menos ▴';
+      });
+    }
+  </script>
+</body>
+</html>
