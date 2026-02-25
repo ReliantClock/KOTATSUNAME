@@ -1,13 +1,13 @@
 /**
  * ============================================================
- * escritos_buscador.js — Lógica de Biblioteca y Lector Pro
+ * escritos_buscador.js — Lógica de Biblioteca y Lector Integrado
  * ============================================================
  */
 import { loadEscritos } from "./escritos_data.js";
 
 let ESCRITOS = [];
 const filters = { query: "", genero: "", autor: "", capsMin: 1, capsMax: 50 };
-let fontSize = 1.2; // Tamaño de fuente inicial
+let fontSize = 1.2; // Tamaño de fuente inicial para la lectura
 
 // --- REFERENCIAS DOM ---
 const grid = document.getElementById("resultsGrid");
@@ -18,6 +18,7 @@ const textViewer = document.getElementById("textViewer");
 const viewerBody = document.getElementById("viewerBody");
 
 async function init() {
+    // Carga de datos desde escritos_data.js
     ESCRITOS = await loadEscritos();
     setupEventListeners();
     render();
@@ -27,8 +28,11 @@ async function init() {
 function render() {
     const filtered = ESCRITOS.filter(item => {
         const q = filters.query.toLowerCase();
+        // Filtro por nombre o autor
         if (q && !item.titulo.toLowerCase().includes(q) && !item.autor.toLowerCase().includes(q)) return false;
+        // Filtro por género
         if (filters.genero && !item.generos.map(g => g.toLowerCase()).includes(filters.genero.toLowerCase())) return false;
+        // Filtro por capítulos
         if (item.capitulos < filters.capsMin) return false;
         const maxLimit = filters.capsMax >= 50 ? Infinity : filters.capsMax;
         if (item.capitulos > maxLimit) return false;
@@ -100,21 +104,17 @@ function abrirMenuCapitulos(item) {
 // --- VISOR DE LECTURA (EXTRACCIÓN DE GOOGLE DOCS) ---
 async function cargarVisorDeLectura(url, numCap) {
     try {
-        // Mostrar estado de carga y resetear vista
-        viewerBody.innerHTML = "<p style='text-align:center; color:var(--accent); opacity:0.5; margin-top:50px;'>Desenrollando el pergamino...</p>";
+        viewerBody.innerHTML = "<p style='text-align:center; color:var(--accent);'>Abriendo pergaminos...</p>";
         textViewer.classList.remove("hidden");
         document.getElementById("viewerTitle").textContent = `Capítulo ${numCap}`;
 
-        // Obtener texto del Google Doc
         const response = await fetch(url);
         if (!response.ok) throw new Error();
         const texto = await response.text();
         
-        // Insertar texto
+        // Insertar texto y resetear scroll
         viewerBody.textContent = texto; 
-        
-        // RESET DE SCROLL: Asegura que el lector empiece desde arriba (oculta el botón de índice abajo)
-        textViewer.scrollTo({ top: 0, behavior: 'instant' });
+        textViewer.scrollTo(0,0);
 
     } catch (e) {
         alert("Error al conectar con el servidor de lectura. Verifica los permisos del documento.");
@@ -124,7 +124,7 @@ async function cargarVisorDeLectura(url, numCap) {
 
 // --- CONFIGURACIÓN DE EVENTOS ---
 function setupEventListeners() {
-    // Buscador
+    // Buscador de texto
     document.getElementById("searchInput").oninput = (e) => { 
         filters.query = e.target.value;
         render(); 
@@ -155,7 +155,7 @@ function setupEventListeners() {
         render();
     };
     
-    // Zoom de lectura
+    // Controles del Visor de Lectura (Zoom)
     document.getElementById("increaseFont").onclick = () => {
         fontSize += 0.1;
         viewerBody.style.fontSize = `${fontSize}rem`;
@@ -167,14 +167,15 @@ function setupEventListeners() {
         }
     };
 
-    // Cerrar componentes
+    // Cerrar vistas
     document.getElementById("modalClose").onclick = () => modal.classList.remove("open");
     document.getElementById("closeReader").onclick = () => readerView.classList.add("hidden");
     document.getElementById("closeViewer").onclick = () => textViewer.classList.add("hidden");
     document.getElementById("backToChapters").onclick = () => textViewer.classList.add("hidden");
     
-    // Reset general
+    // Resetear
     document.getElementById("resetFilters").onclick = () => location.reload();
 }
 
+// Iniciar aplicación
 init();
