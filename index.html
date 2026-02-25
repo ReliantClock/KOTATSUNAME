@@ -3,9 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buscador de Series</title>
+  <title>KOTATSUNAME - Series</title>
   <link rel="stylesheet" href="buscador.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+    <style>
+    /* Ajuste rápido para el botón de navegación en esta página */
+    .search-bar { display: flex; align-items: center; gap: 10px; }
+    .nav-btn { 
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0);
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.8rem;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
+      transition: 0.3s;
+    }
+    .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+  </style>
 </head>
 <body>
 
@@ -110,6 +127,8 @@
 
       <!-- Botón reset -->
       <button id="resetFilters" class="reset-btn">↺ Resetear filtros</button>
+      
+      <a href="index.html" class="nav-btn">ESCRITOS</a>
     </div>
 
     <!-- RESULTADOS -->
