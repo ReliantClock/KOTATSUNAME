@@ -128,7 +128,6 @@
       background: rgba(6,182,212,0.08);
       box-shadow: none;
     }
-
     /* Fin de capítulo */
     .chapter-end {
       text-align: center;
@@ -247,7 +246,7 @@
   async function precargarSiguiente(libro, siguienteGnum) {
     const nextData = buildNavUrl(libro, siguienteGnum);
     if (nextData && nextData.rawTextUrl) {
-      console.log(`🚀 Precargando texto del capítulo ${siguienteGnum}...`);
+      console.log(`Precargando texto del capítulo ${siguienteGnum}...`);
       fetch(nextData.rawTextUrl, { priority: 'low' }).catch(() => {});
       
       const link = document.createElement('link');
