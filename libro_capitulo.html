@@ -166,6 +166,12 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+    
+    #btnCompartir:hover {
+  background: rgba(6, 182, 212, 0.1);
+  /* Un tono cian suave */
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
   </style>
 </head>
 <body>
@@ -173,9 +179,12 @@
 
   <div class="reading-page">
     <!-- Nav superior -->
-    <nav style="margin-bottom: 28px;">
-      <button id="btnVolver" class="nav-btn">Volver al índice</button>
-    </nav>
+<nav style="margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center;">
+  <button id="btnVolver" class="nav-btn">Volver al índice</button>
+  <button id="btnCompartir" class="nav-btn" style="border-color: var(--accent3); color: var(--accent3);">
+    Compartir</button>
+</nav>
+
 
     <!-- Cabecera del capítulo -->
     <header class="read-header">
@@ -205,113 +214,158 @@
     <button class="control-btn" id="fontUp">A+</button>
   </div>
 
-  <script type="module">
-    import { loadEscritos } from "./escritos_data.js";
+<script type="module">
+  import { loadEscritos } from "./escritos_data.js";
 
-    // ── Parámetros de la URL
-    const params  = new URLSearchParams(window.location.search);
-    const libroId = params.get("id");
-    const volNum  = parseInt(params.get("vol"))  || 1;
-    const capNum  = parseInt(params.get("cap"))  || 1;
-    const gnum    = parseInt(params.get("gnum")) || 1; // número global del cap
+  // ── Parámetros de la URL
+  const params  = new URLSearchParams(window.location.search);
+  const libroId = params.get("id");
+  const volNum  = parseInt(params.get("vol"))  || 1;
+  const capNum  = parseInt(params.get("cap"))  || 1;
+  const gnum    = parseInt(params.get("gnum")) || 1; 
 
-    let fontSize = 1.15;
+  let fontSize = 1.15;
 
-    // ── Construir URL de navegación
-    function buildNavUrl(libro, targetGnum) {
-      // targetGnum es el número global del capítulo destino
-      let accumulated = 0;
-      for (const vol of libro.volumenes) {
-        for (const cap of vol.capitulos) {
-          accumulated++;
-          if (accumulated === targetGnum) {
-            return `libro_capitulo.html?id=${libroId}&vol=${vol.numero}&cap=${cap.numero}&gnum=${targetGnum}`;
-          }
+  // ── Construir URL de navegación
+  function buildNavUrl(libro, targetGnum) {
+    let accumulated = 0;
+    for (const vol of libro.volumenes) {
+      for (const cap of vol.capitulos) {
+        accumulated++;
+        if (accumulated === targetGnum) {
+          return {
+            fullUrl: `libro_capitulo.html?id=${libroId}&vol=${vol.numero}&cap=${cap.numero}&gnum=${targetGnum}`,
+            rawTextUrl: cap.urlTexto 
+          };
         }
       }
-      return null;
     }
+    return null;
+  }
 
-    // ── Carga y renderiza el capítulo
-    async function cargarCapitulo() {
-      if (!libroId) { window.location.href = "escritos.html"; return; }
+  // ── Función de Precarga
+  async function precargarSiguiente(libro, siguienteGnum) {
+    const nextData = buildNavUrl(libro, siguienteGnum);
+    if (nextData && nextData.rawTextUrl) {
+      console.log(`🚀 Precargando texto del capítulo ${siguienteGnum}...`);
+      fetch(nextData.rawTextUrl, { priority: 'low' }).catch(() => {});
+      
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = nextData.rawTextUrl;
+      document.head.appendChild(link);
+    }
+  }
 
-      const libros = await loadEscritos();
-      const libro  = libros.find(l => l.id == libroId);
+  // ── Función Compartir Capítulo
+  async function configurarBotonCompartir(libro) {
+    const btnCompartir = document.getElementById("btnCompartir");
+    if (!btnCompartir) return;
 
-      if (!libro) { window.location.href = "escritos.html"; return; }
+    btnCompartir.addEventListener("click", async () => {
+      const shareData = {
+        title: `KotatsuName - ${libro.titulo}`,
+        text: `Lee el Capítulo ${gnum} de "${libro.titulo}" en KotatsuName `,
+        url: window.location.href
+      };
 
-      // Títulos
-      document.getElementById("capTitle").textContent = `Capítulo ${gnum}`;
-      document.getElementById("bookRef").textContent  = libro.titulo;
-      document.title = `Cap. ${gnum} — ${libro.titulo}`;
-
-      // Buscar la URL del capítulo actual (vol + cap dentro del vol)
-      const volData = libro.volumenes.find(v => v.numero === volNum);
-      const capData = volData?.capitulos.find(c => c.numero === capNum);
-
-      const content = document.getElementById("capContent");
-
-      if (!capData || !capData.urlTexto) {
-        content.textContent = "Este capítulo aún no tiene contenido disponible.";
-      } else {
-        try {
-          const res  = await fetch(capData.urlTexto);
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const texto = await res.text();
-          // Limpiar caracteres raros del export de Google Docs
-          content.textContent = texto
-            .replace(/\r\n/g, "\n")
-            .replace(/\r/g, "\n")
-            .trim();
-          window.scrollTo(0, 0);
-        } catch (e) {
-          content.textContent = "No se pudo cargar el contenido. Verifica la conexión o el permiso del documento.";
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(window.location.href);
+          const originalText = btnCompartir.textContent;
+          btnCompartir.textContent = "Copiado";
+          setTimeout(() => { btnCompartir.textContent = originalText; }, 2000);
         }
+      } catch (err) {
+        console.log("Error al compartir:", err);
       }
+    });
+  }
 
-      // ── Navegación: calcular total de caps
-      const totalCaps = libro.volumenes.reduce((acc, v) => acc + v.capitulos.length, 0);
+  // ── Carga y renderiza el capítulo
+  async function cargarCapitulo() {
+    if (!libroId) { window.location.href = "escritos.html"; return; }
 
-      const btnPrev  = document.getElementById("btnPrev");
-      const btnNext  = document.getElementById("btnNext");
-      const btnIndex = document.getElementById("btnIndex");
+    const libros = await loadEscritos();
+    const libro  = libros.find(l => l.id == libroId);
 
-      // Anterior
-      if (gnum > 1) {
-        const prevUrl = buildNavUrl(libro, gnum - 1);
-        btnPrev.textContent = "⇠ Anterior";
-        btnPrev.classList.remove("disabled");
-        btnPrev.addEventListener("click", () => { window.location.href = prevUrl; });
+    if (!libro) { window.location.href = "escritos.html"; return; }
+
+    // Activar botón compartir con los datos del libro
+    configurarBotonCompartir(libro);
+
+    // Títulos
+    document.getElementById("capTitle").textContent = `Capítulo ${gnum}`;
+    document.getElementById("bookRef").textContent  = libro.titulo;
+    document.title = `Cap. ${gnum} — ${libro.titulo}`;
+
+    const volData = libro.volumenes.find(v => v.numero === volNum);
+    const capData = volData?.capitulos.find(c => c.numero === capNum);
+    const content = document.getElementById("capContent");
+
+    if (!capData || !capData.urlTexto) {
+      content.textContent = "Este capítulo aún no tiene contenido disponible.";
+    } else {
+      try {
+        const res  = await fetch(capData.urlTexto);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const texto = await res.text();
+        content.textContent = texto.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+        window.scrollTo(0, 0);
+        
+        // --- INICIO PRECARGA ---
+        const totalCaps = libro.volumenes.reduce((acc, v) => acc + v.capitulos.length, 0);
+        if (gnum < totalCaps) {
+          setTimeout(() => precargarSiguiente(libro, gnum + 1), 5000);
+        }
+        // --- FIN PRECARGA ---
+
+      } catch (e) {
+        content.textContent = "No se pudo cargar el contenido. Verifica la conexión.";
       }
-
-      // Siguiente
-      if (gnum < totalCaps) {
-        const nextUrl = buildNavUrl(libro, gnum + 1);
-        btnNext.textContent = "Siguiente ⇢";
-        btnNext.classList.remove("disabled");
-        btnNext.addEventListener("click", () => { window.location.href = nextUrl; });
-      }
-
-      // Índice y volver
-      const indexUrl = `escritos_capitulos.html?id=${libroId}`;
-      btnIndex.addEventListener("click", () => { window.location.href = indexUrl; });
-      document.getElementById("btnVolver").addEventListener("click", () => {
-        window.location.href = indexUrl;
-      });
     }
 
-    // ── Controles de fuente
-    document.getElementById("fontUp").addEventListener("click", () => {
-      fontSize = Math.min(fontSize + 0.1, 2.0);
-      document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
-    });
-    document.getElementById("fontDown").addEventListener("click", () => {
-      fontSize = Math.max(fontSize - 0.1, 0.8);
-      document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
-    });
+    // ── Navegación
+    const totalCaps = libro.volumenes.reduce((acc, v) => acc + v.capitulos.length, 0);
+    const btnPrev  = document.getElementById("btnPrev");
+    const btnNext  = document.getElementById("btnNext");
+    const btnIndex = document.getElementById("btnIndex");
 
-    cargarCapitulo();
-  </script>
+    if (gnum > 1) {
+      const prevData = buildNavUrl(libro, gnum - 1);
+      btnPrev.textContent = "⇠ Anterior";
+      btnPrev.classList.remove("disabled");
+      btnPrev.addEventListener("click", () => { window.location.href = prevData.fullUrl; });
+    }
+
+    if (gnum < totalCaps) {
+      const nextData = buildNavUrl(libro, gnum + 1);
+      btnNext.textContent = "Siguiente ⇢";
+      btnNext.classList.remove("disabled");
+      btnNext.addEventListener("click", () => { window.location.href = nextData.fullUrl; });
+    }
+
+    const indexUrl = `escritos_capitulos.html?id=${libroId}`;
+    btnIndex.addEventListener("click", () => { window.location.href = indexUrl; });
+    document.getElementById("btnVolver").addEventListener("click", () => {
+      window.location.href = indexUrl;
+    });
+  }
+
+  // ── Controles de fuente
+  document.getElementById("fontUp").addEventListener("click", () => {
+    fontSize = Math.min(fontSize + 0.1, 2.0);
+    document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
+  });
+  document.getElementById("fontDown").addEventListener("click", () => {
+    fontSize = Math.max(fontSize - 0.1, 0.8);
+    document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
+  });
+
+  cargarCapitulo();
+</script>
+
 </body>
 </html>
