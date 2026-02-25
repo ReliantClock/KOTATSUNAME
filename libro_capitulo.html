@@ -3,10 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Capítulos - Kotatsuname</title>
+  <title>Lectura - Kotatsuname</title>
   <link rel="stylesheet" href="buscador.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
+    /* ── Página de lectura ── */
+    .reading-page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 36px 20px 100px;
+      position: relative;
+      z-index: 1;
+    }
+
     .nav-btn {
       display: inline-block;
       text-decoration: none;
@@ -24,256 +33,285 @@
     }
     .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
 
-    .book-header {
-      display: flex;
-      gap: 28px;
-      align-items: flex-start;
-      margin-bottom: 36px;
-      flex-wrap: wrap;
+    .read-header {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+    }
+    .read-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .read-header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
     }
 
-    /* Placeholder con shimmer mientras carga la imagen */
-    .book-cover-placeholder {
-      width: 140px;
-      height: 200px;
-      flex-shrink: 0;
-      border-radius: 10px;
+    /* Texto de lectura */
+    .reading-text {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #ddd;
+      white-space: pre-wrap;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 200px;
+    }
+
+    /* Estado de carga */
+    .loading-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      padding: 40px 0;
+    }
+    .loading-text::before {
+      content: "";
+      width: 18px;
+      height: 18px;
       border: 2px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      background: linear-gradient(90deg, var(--surface2) 25%, #1e1e2e 50%, var(--surface2) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.6s infinite;
-    }
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* Imagen: invisible hasta cargar, luego fade-in */
-    .book-cover-img {
-      width: 140px;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
       flex-shrink: 0;
-      border-radius: 10px;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 20px rgba(230,62,109,0.25);
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 0.6s ease;
     }
-    .book-cover-img.loaded { opacity: 1; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .book-info { flex: 1; min-width: 200px; }
-    .book-info h1 {
-      font-family: var(--font-display);
-      font-size: clamp(1.2rem, 3vw, 2rem);
-      background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
-    }
-    .book-info .author   { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 10px; }
-    .book-info .sinopsis { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
-
-    /* Badge de estado — vacío en HTML, JS pone texto y clase */
-    .status-badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid currentColor;
-    }
-    .status-emision  { color: #4CAF50; background: rgba(76,175,80,0.1); }
-    .status-pausa    { color: #ff4444; background: rgba(255,68,68,0.1); }
-    .status-completo { color: #00d4ff; background: rgba(0,212,255,0.1); }
-
-    .separator { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
-
-    .volume-block { margin-bottom: 36px; }
-    .volume-title {
-      font-family: var(--font-display);
-      font-size: 1rem;
-      color: var(--accent2);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(124,58,237,0.25);
-    }
-
-    .chapter-list { display: flex; flex-direction: column; gap: 8px; }
-    .chapter-item {
+    /* Navegación entre capítulos */
+    .chapter-nav {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 14px 20px;
+      align-items: center;
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      gap: 12px;
+    }
+    .nav-cap-btn {
+      text-decoration: none;
+      background: transparent;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.7);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      flex: 1;
+      max-width: 160px;
+    }
+    .nav-cap-btn:hover:not(.disabled) {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(230,62,109,0.4);
+    }
+    .nav-cap-btn.disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .nav-cap-btn.index-btn {
+      max-width: 120px;
+      border-color: var(--border);
+      color: var(--text-muted);
+    }
+    .nav-cap-btn.index-btn:hover {
+      border-color: var(--accent3);
+      color: var(--accent3);
+      background: rgba(6,182,212,0.08);
+      box-shadow: none;
+    }
+
+    /* Fin de capítulo */
+    .chapter-end {
+      text-align: center;
+      margin-top: 60px;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Controles de fuente */
+    .font-controls {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+    .control-btn {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      color: var(--text);
+      padding: 10px 14px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      transition: all 0.2s;
     }
-    .chapter-item:hover {
+    .control-btn:hover {
       border-color: var(--accent);
-      background: var(--surface2);
-      transform: translateX(4px);
-      box-shadow: 0 0 12px rgba(230,62,109,0.15);
+      color: var(--accent);
     }
-    .chapter-item .cap-num   { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
-    .chapter-item .cap-label { font-size: 0.95rem; font-weight: 600; color: var(--text); }
-    .chapter-item .cap-arrow { font-size: 0.85rem; color: var(--accent); font-weight: 700; }
-
-    .empty-volumes { text-align: center; padding: 60px 20px; color: var(--text-muted); }
   </style>
 </head>
 <body>
   <div class="bg-grid"></div>
-  <div class="bg-glow"></div>
 
-  <div class="wrapper">
-    <nav style="padding: 20px 0 28px;">
-      <a href="escritos.html" class="nav-btn">← Volver a la Biblioteca</a>
+  <div class="reading-page">
+    <!-- Nav superior -->
+    <nav style="margin-bottom: 28px;">
+      <button id="btnVolver" class="nav-btn">Volver al índice</button>
     </nav>
 
-    <div class="book-header">
-      <!-- Sin texto ni clase de estado aquí — todo lo pone el JS -->
-      <div id="bookCover" class="book-cover-placeholder"></div>
-      <div class="book-info">
-        <h1 id="bookTitle">Cargando...</h1>
-        <p class="author" id="bookAuthor"></p>
-        <div id="bookTags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
-        <p class="sinopsis" id="bookSinopsis"></p>
-        <!-- VACÍO: sin textContent ni clase de color, el JS lo llena -->
-        <span id="bookStatus" class="status-badge"></span>
-        <span style="margin-left:12px;font-size:0.85rem;color:var(--text-muted);" id="bookCaps"></span>
-      </div>
-    </div>
+    <!-- Cabecera del capítulo -->
+    <header class="read-header">
+      <h1 id="capTitle">Cargando...</h1>
+      <p id="bookRef"></p>
+    </header>
 
-    <hr class="separator" />
+    <!-- Contenido -->
+    <article id="capContent" class="reading-text">
+      <div class="loading-text">Consultando los archivos...</div>
+    </article>
 
-    <h3 style="font-family:var(--font-display);font-size:1rem;letter-spacing:0.1em;margin-bottom:20px;color:var(--text-muted);">
-      LISTA DE CAPÍTULOS
-    </h3>
+    <!-- Fin del capítulo -->
+    <div class="chapter-end">✦ Fin del capítulo ✦</div>
 
-    <div id="volumeContainer"></div>
+    <!-- Navegación inferior -->
+    <footer class="chapter-nav">
+      <button id="btnPrev" class="nav-cap-btn disabled">Anterior</button>
+      <button id="btnIndex" class="nav-cap-btn index-btn">Índice</button>
+      <button id="btnNext" class="nav-cap-btn disabled">Siguiente</button>
+    </footer>
+  </div>
+
+  <!-- Controles de fuente -->
+  <div class="font-controls">
+    <button class="control-btn" id="fontDown">A−</button>
+    <button class="control-btn" id="fontUp">A+</button>
   </div>
 
   <script type="module">
     import { loadEscritos } from "./escritos_data.js";
 
+    // ── Parámetros de la URL
     const params  = new URLSearchParams(window.location.search);
     const libroId = params.get("id");
-    let globalCapNum = 0;
+    const volNum  = parseInt(params.get("vol"))  || 1;
+    const capNum  = parseInt(params.get("cap"))  || 1;
+    const gnum    = parseInt(params.get("gnum")) || 1; // número global del cap
 
-    async function cargarLibro() {
+    let fontSize = 1.15;
+
+    // ── Construir URL de navegación
+    function buildNavUrl(libro, targetGnum) {
+      // targetGnum es el número global del capítulo destino
+      let accumulated = 0;
+      for (const vol of libro.volumenes) {
+        for (const cap of vol.capitulos) {
+          accumulated++;
+          if (accumulated === targetGnum) {
+            return `libro_capitulo.html?id=${libroId}&vol=${vol.numero}&cap=${cap.numero}&gnum=${targetGnum}`;
+          }
+        }
+      }
+      return null;
+    }
+
+    // ── Carga y renderiza el capítulo
+    async function cargarCapitulo() {
       if (!libroId) { window.location.href = "escritos.html"; return; }
 
       const libros = await loadEscritos();
       const libro  = libros.find(l => l.id == libroId);
 
-      if (!libro) {
-        document.getElementById("bookTitle").textContent = "Libro no encontrado";
-        return;
-      }
+      if (!libro) { window.location.href = "escritos.html"; return; }
 
-      // ── Portada con shimmer → fade-in al cargar ──
-      if (libro.cover) {
-        const img     = document.createElement("img");
-        img.className = "book-cover-img";
-        img.alt       = libro.titulo;
-        img.addEventListener("load",  () => img.classList.add("loaded"));
-        img.addEventListener("error", () => {
-          // Si falla la imagen, volver al placeholder sin animación
-          const ph = document.createElement("div");
-          ph.className   = "book-cover-placeholder";
-          ph.style.animation = "none";
-          ph.textContent = "";
-          document.getElementById("bookCover").replaceWith(ph);
-        });
-        // Cache-bust con el id del libro para que cada libro cargue su propia imagen
-        img.src = libro.cover + (libro.cover.includes("?") ? "&" : "?") + "_cb=" + libro.id;
-        document.getElementById("bookCover").replaceWith(img);
+      // Títulos
+      document.getElementById("capTitle").textContent = `Capítulo ${gnum}`;
+      document.getElementById("bookRef").textContent  = libro.titulo;
+      document.title = `Cap. ${gnum} — ${libro.titulo}`;
+
+      // Buscar la URL del capítulo actual (vol + cap dentro del vol)
+      const volData = libro.volumenes.find(v => v.numero === volNum);
+      const capData = volData?.capitulos.find(c => c.numero === capNum);
+
+      const content = document.getElementById("capContent");
+
+      if (!capData || !capData.urlTexto) {
+        content.textContent = "Este capítulo aún no tiene contenido disponible.";
       } else {
-        // Sin cover: quitar shimmer del placeholder
-        document.getElementById("bookCover").style.animation = "none";
+        try {
+          const res  = await fetch(capData.urlTexto);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const texto = await res.text();
+          // Limpiar caracteres raros del export de Google Docs
+          content.textContent = texto
+            .replace(/\r\n/g, "\n")
+            .replace(/\r/g, "\n")
+            .trim();
+          window.scrollTo(0, 0);
+        } catch (e) {
+          content.textContent = "No se pudo cargar el contenido. Verifica la conexión o el permiso del documento.";
+        }
       }
 
-      // ── Info básica ──
-      document.getElementById("bookTitle").textContent    = libro.titulo;
-      document.getElementById("bookAuthor").textContent   = `Escrito por: ${libro.autor}`;
-      document.getElementById("bookSinopsis").textContent = libro.sinopsis;
-      document.getElementById("bookCaps").textContent     =
-        `${libro.capitulos} capítulo${libro.capitulos !== 1 ? "s" : ""}`;
+      // ── Navegación: calcular total de caps
+      const totalCaps = libro.volumenes.reduce((acc, v) => acc + v.capitulos.length, 0);
 
-      // ── Tags géneros ──
-      document.getElementById("bookTags").innerHTML = libro.generos
-        .map(g => `<span class="modal-tag">${g}</span>`).join("");
+      const btnPrev  = document.getElementById("btnPrev");
+      const btnNext  = document.getElementById("btnNext");
+      const btnIndex = document.getElementById("btnIndex");
 
-      // ── Estado: leído del Sheet, nunca del HTML ──
-      const statusEl  = document.getElementById("bookStatus");
-      const estadoRaw = (libro.estado || "").trim().toLowerCase();
-
-      if (estadoRaw === "completado" || estadoRaw === "finalizado") {
-        statusEl.textContent = "Completado";
-        statusEl.className   = "status-badge status-completo";
-      } else if (estadoRaw === "pausa" || estadoRaw === "en pausa") {
-        statusEl.textContent = "En Pausa";
-        statusEl.className   = "status-badge status-pausa";
-      } else {
-        statusEl.textContent = "En Emisión";
-        statusEl.className   = "status-badge status-emision";
+      // Anterior
+      if (gnum > 1) {
+        const prevUrl = buildNavUrl(libro, gnum - 1);
+        btnPrev.textContent = "⇠ Anterior";
+        btnPrev.classList.remove("disabled");
+        btnPrev.addEventListener("click", () => { window.location.href = prevUrl; });
       }
 
-      // ── Volúmenes ──
-      const container = document.getElementById("volumeContainer");
-
-      if (!libro.volumenes || libro.volumenes.length === 0) {
-        container.innerHTML = `<div class="empty-volumes">📭 Aún no hay capítulos disponibles.</div>`;
-        return;
+      // Siguiente
+      if (gnum < totalCaps) {
+        const nextUrl = buildNavUrl(libro, gnum + 1);
+        btnNext.textContent = "Siguiente ⇢";
+        btnNext.classList.remove("disabled");
+        btnNext.addEventListener("click", () => { window.location.href = nextUrl; });
       }
 
-      libro.volumenes.forEach(vol => {
-        const block = document.createElement("div");
-        block.className = "volume-block";
-
-        const capItems = vol.capitulos.map(cap => {
-          globalCapNum++;
-          const gNum = globalCapNum;
-          return `
-            <div class="chapter-item"
-                 data-id="${libroId}"
-                 data-vol="${vol.numero}"
-                 data-cap="${cap.numero}"
-                 data-gnum="${gNum}">
-              <span class="cap-num">Cap. ${gNum}</span>
-              <span class="cap-label">Capítulo ${gNum}</span>
-              <span class="cap-arrow">Leer ➜</span>
-            </div>
-          `;
-        }).join("");
-
-        block.innerHTML = `
-          <div class="volume-title">Volumen ${vol.numero}</div>
-          <div class="chapter-list">${capItems}</div>
-        `;
-        container.appendChild(block);
-      });
-
-      container.addEventListener("click", e => {
-        const item = e.target.closest(".chapter-item");
-        if (!item) return;
-        window.location.href =
-          `libro_capitulo.html?id=${item.dataset.id}&vol=${item.dataset.vol}&cap=${item.dataset.cap}&gnum=${item.dataset.gnum}`;
+      // Índice y volver
+      const indexUrl = `escritos_capitulos.html?id=${libroId}`;
+      btnIndex.addEventListener("click", () => { window.location.href = indexUrl; });
+      document.getElementById("btnVolver").addEventListener("click", () => {
+        window.location.href = indexUrl;
       });
     }
 
-    cargarLibro();
+    // ── Controles de fuente
+    document.getElementById("fontUp").addEventListener("click", () => {
+      fontSize = Math.min(fontSize + 0.1, 2.0);
+      document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
+    });
+    document.getElementById("fontDown").addEventListener("click", () => {
+      fontSize = Math.max(fontSize - 0.1, 0.8);
+      document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
+    });
+
+    cargarCapitulo();
   </script>
 </body>
 </html>
