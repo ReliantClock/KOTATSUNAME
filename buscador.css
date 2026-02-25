@@ -803,39 +803,3 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
     opacity: 0.3;
     margin-bottom: 40px;
 }
-/* Espaciado para alejar el botón del texto */
-.viewer-footer {
-    margin-top: 150px; /* Aleja el botón 150px del final del texto */
-    padding-bottom: 100px;
-    text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 30px;
-}
-
-/* Botón de índice más tenue y discreto */
-#backToChapters {
-    background: rgba(255, 255, 255, 0.05); /* Muy transparente */
-    color: rgba(255, 255, 255, 0.4);      /* Texto tenue */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: none;                      /* Sin brillo neón inicial */
-    font-size: 0.9rem;
-    padding: 10px 25px;
-    transition: all 0.4s ease;
-}
-
-/* Solo destaca cuando el usuario realmente quiere usarlo */
-#backToChapters:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border-color: var(--accent);
-    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.2);
-}
-
-/* Estilo para el aviso de "Fin del capítulo" */
-.viewer-footer p {
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: 0.8rem;
-    letter-spacing: 4px;
-    opacity: 0.3;
-    margin-bottom: 40px;
-}
