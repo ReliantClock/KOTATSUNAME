@@ -23,6 +23,23 @@
       transition: all 0.3s;
     }
     .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+    
+        .sidebar-btn {
+      text-decoration: none;
+      background: transparent;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .sidebar-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
   </style>
 </head>
 <body>
@@ -31,10 +48,13 @@
   <div class="bg-glow"></div>
 
   <div class="wrapper">
+                  <a href="registrarse.html" class="sidebar-btn">Volver a Series</a>
 
     <header class="header">
       <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
       <p class="tagline">Crónicas, relatos y leyendas originales</p>
+      
+
     </header>
 
     <!-- BARRA DE BÚSQUEDA -->
