@@ -6,6 +6,24 @@
   <title>KOTATSUNAME - Libros y Relatos</title>
   <link rel="stylesheet" href="buscador.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+    
+  <meta name="theme-color" content="#0a0a0f">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="manifest" href="/manifest.json">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('PWA Kotatsu: Service Worker registrado'))
+        .catch(err => console.log('PWA Kotatsu: Error al registrar Service Worker', err));
+    });
+  }
+</script>
+
   <style>
     .nav-btn {
       text-decoration: none;
