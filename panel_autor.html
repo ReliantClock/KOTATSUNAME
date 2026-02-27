@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Autor | Kotatsu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="buscador.css">
+  <style>
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; }
+
+    .top-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 24px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .top-nav .brand  { font-family: 'Cinzel Decorative'; color: var(--accent); font-size: 1.3rem; }
+    .top-nav .logout { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; transition: color 0.2s; }
+    .top-nav .logout:hover { color: var(--accent); }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    /* ── Perfil ── */
+    .profile-card {
+      display: flex; align-items: center; gap: 24px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 24px 28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3); flex-wrap: wrap;
+    }
+    .avatar-wrap { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+    .avatar-wrap img {
+      width: 100%; height: 100%; border-radius: 50%;
+      object-fit: cover; border: 3px solid var(--accent3);
+      background: #1a1a28; display: block;
+    }
+    .avatar-btn {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--surface);
+      color: #fff; font-size: 0.7rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .avatar-btn:hover { transform: scale(1.1); }
+
+    .profile-info { flex: 1; min-width: 160px; }
+    .profile-info .role { color: var(--accent3); font-size: 0.65rem; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; }
+    .profile-info h2 { color: #fff; margin: 4px 0 0; font-size: 1.4rem; }
+
+    /* Drawer de foto */
+    .photo-drawer {
+      background: #12121e; border: 1px solid var(--border); border-top: none;
+      border-radius: 0 0 20px 20px; max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s, opacity 0.3s; opacity: 0;
+    }
+    .photo-drawer.open { max-height: 160px; padding: 20px 24px; opacity: 1; }
+    .photo-drawer label { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 10px; }
+    .photo-row { display: flex; gap: 10px; }
+    .photo-row input {
+      flex: 1; background: #0a0a0f; border: 1px solid var(--border);
+      padding: 11px 14px; border-radius: 10px; color: #fff; outline: none;
+      font-family: 'Rajdhani'; font-size: 0.95rem; transition: 0.2s;
+    }
+    .photo-row input:focus { border-color: var(--accent3); }
+    .photo-row button {
+      background: var(--accent3); color: #000; border: none;
+      padding: 0 20px; border-radius: 10px; font-weight: 700;
+      font-family: 'Rajdhani'; cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+      white-space: nowrap;
+    }
+    .photo-row button:hover { filter: brightness(1.15); }
+
+    /* Obras */
+    .obras-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin: 28px 0 18px; flex-wrap: wrap; gap: 12px;
+    }
+    .obras-header h3 { font-family: 'Cinzel Decorative'; font-size: 0.85rem; letter-spacing: 1px; color: var(--text-muted); }
+    .btn-nueva {
+      background: var(--accent); color: #fff; text-decoration: none;
+      padding: 10px 22px; border-radius: 50px; font-weight: 700;
+      font-size: 0.75rem; box-shadow: 0 4px 15px rgba(230,62,109,0.3); transition: 0.2s;
+    }
+    .btn-nueva:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    .obra-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; gap: 16px; transition: border-color 0.2s; flex-wrap: wrap;
+    }
+    .obra-card:hover { border-color: rgba(230,62,109,0.3); }
+    .obra-card h4 { margin: 0 0 4px; color: #fff; font-size: 1rem; }
+    .obra-card small { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px; }
+
+    .badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px; margin-left: 8px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .badge-aprobado  { color: #4CAF50; background: rgba(76,175,80,0.12);  border: 1px solid #4CAF50; }
+    .badge-pendiente { color: #f59e0b; background: rgba(245,158,11,0.12); border: 1px solid #f59e0b; }
+    .badge-rechazado { color: var(--accent); background: rgba(230,62,109,0.1); border: 1px solid var(--accent); }
+
+    .btn-gestionar {
+      color: var(--accent3); text-decoration: none;
+      border: 1px solid var(--accent3); padding: 7px 14px;
+      border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+      white-space: nowrap; transition: 0.2s;
+    }
+    .btn-gestionar:hover { background: var(--accent3); color: #000; }
+
+    .empty-obras { text-align: center; padding: 50px 20px; border: 1px dashed var(--border); border-radius: 14px; color: var(--text-muted); }
+    .empty-obras i { font-size: 2rem; margin-bottom: 12px; display: block; opacity: 0.4; }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <nav class="top-nav">
+    <span class="brand">KOTATSUNAME</span>
+    <button class="logout" id="logoutBtn" title="Cerrar sesión"><i class="fas fa-power-off"></i></button>
+  </nav>
+
+  <main class="container">
+
+    <div style="margin-bottom: 20px;">
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <img id="profileImg" src="data:image/svg+xml,<svg viewBox='0 0 1 1' fill='%231a1a28' xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/></svg>" alt="Avatar" />
+          <button class="avatar-btn" onclick="togglePhotoDrawer()" title="Cambiar foto">
+            <i class="fas fa-camera"></i>
+          </button>
+        </div>
+        <div class="profile-info">
+          <p class="role">Gremio de Escritores</p>
+          <h2 id="profileName">Cargando...</h2>
+        </div>
+      </div>
+
+      <div class="photo-drawer" id="photoDrawer">
+        <label>Enlace de imagen (Google Drive)</label>
+        <div class="photo-row">
+          <input type="text" id="driveInput" placeholder="Pega el enlace de compartir de Drive..." />
+          <button onclick="guardarFoto()">Actualizar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="obras-header">
+      <h3>Mis Manuscritos</h3>
+      <a href="nueva_obra.html" class="btn-nueva">+ Nueva Obra</a>
+    </div>
+
+    <div id="listaObras">
+      <div style="text-align:center; padding:40px; color:var(--text-muted);">
+        <i class="fas fa-spinner fa-spin"></i> &nbsp;Cargando manuscritos...
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { loadEscritos } from "./escritos_data.js";
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQzNc0nIF-14E6E7_Th_dw-rKycHGfnR_jGRTSK0j8kZCsghjSzEH1VpK3g0HUz2o3/exec";
+
+    // Leer sesión siempre como string
+    const idAutor = String(localStorage.getItem("ktt_id")   || "");
+    const user    = String(localStorage.getItem("ktt_user") || "");
+    const foto    = localStorage.getItem("ktt_foto") || "";
+
+    if (!idAutor || idAutor === "null") {
+      window.location.href = "registrarse.html";
+    }
+
+    document.getElementById("profileName").textContent = user || "Autor";
+
+    if (foto && foto !== "undefined" && foto !== "") {
+      document.getElementById("profileImg").src = foto;
+    }
+
+    // ── Toggle drawer foto ──
+    window.togglePhotoDrawer = () => {
+      document.getElementById("photoDrawer").classList.toggle("open");
+    };
+
+    // ── Guardar foto ──
+    window.guardarFoto = async () => {
+      const val = document.getElementById("driveInput").value.trim();
+      if (!val) return;
+
+      const match = val.match(/[-\w]{25,}/);
+      if (!match) { alert("Enlace de Drive no válido."); return; }
+
+      const url = `https://wsrv.nl/?url=${encodeURIComponent(`https://drive.google.com/uc?export=view&id=${match[0]}`)}&w=300&output=webp`;
+
+      document.getElementById("profileImg").src = url;
+      localStorage.setItem("ktt_foto", url);
+      document.getElementById("photoDrawer").classList.remove("open");
+      document.getElementById("driveInput").value = "";
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST", mode: "no-cors",
+          body: JSON.stringify({ action: "actualizarFoto", idAutor, foto: url }),
+        });
+      } catch (e) { console.warn("No se pudo sincronizar la foto:", e); }
+    };
+
+    // ── Cargar obras ──
+    async function cargarObras() {
+      const container = document.getElementById("listaObras");
+      try {
+        const todas = await loadEscritos();
+
+        // Filtrar por id_autor — comparación de strings para evitar problemas de tipo
+        const mias = todas.filter(o => String(o.id_autor) === idAutor);
+
+        if (mias.length === 0) {
+          container.innerHTML = `
+            <div class="empty-obras">
+              <i class="fas fa-scroll"></i>
+              Aún no has publicado ningún manuscrito.
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = mias.map(o => {
+          const ap = (o.aprobacion || "pendiente").trim().toLowerCase();
+          const badgeClass = ap === "aprobado" ? "badge-aprobado" : ap === "rechazado" ? "badge-rechazado" : "badge-pendiente";
+          const badgeText  = ap === "aprobado" ? "Publicada" : ap === "rechazado" ? "Rechazada" : "Pendiente";
+
+          return `
+            <div class="obra-card">
+              <div>
+                <h4>${o.titulo}<span class="badge ${badgeClass}">${badgeText}</span></h4>
+                <small>${o.capitulos} CAPÍTULO${o.capitulos !== 1 ? "S" : ""} · ${(o.estado || "").toUpperCase()}</small>
+              </div>
+              <a href="gestion_capitulos.html?id=${o.id}" class="btn-gestionar">Gestionar</a>
+            </div>`;
+        }).join("");
+
+      } catch (e) {
+        container.innerHTML = `<p style="color:var(--accent); text-align:center;">Error al cargar tus obras.</p>`;
+      }
+    }
+
+    // ── Si venimos de crear/editar una obra, forzar recarga fresca ──
+    // nueva_obra.html pone este flag en sessionStorage antes de redirigir
+    if (sessionStorage.getItem("panel_reload") === "1") {
+      sessionStorage.removeItem("panel_reload");
+      // Pequeño delay para que el Sheet haya procesado el cambio
+      setTimeout(cargarObras, 1500);
+    } else {
+      cargarObras();
+    }
+
+    // ── Logout ──
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = "registrarse.html";
+    };
+  </script>
+</body>
+</html>
