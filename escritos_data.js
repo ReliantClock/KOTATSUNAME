@@ -1,48 +1,57 @@
 /**
  * ============================================================
- *  escritos_data.js — Conexión con el Sheet de Historias
+ *  escritos_data.js — Base de datos pública de escritos
  * ============================================================
- *  Columnas esperadas en el Sheet:
- *  id | titulo | autor | estado | generos | capitulos | cover | sinopsis
- *  | volumen-1 | volumen-2 | volumen-3 | volumen-4 | volumen-5
+ *  Columnas del Sheet (fila 1 = encabezados):
  *
- *  Cada celda de volumen contiene links separados por coma:
- *  https://link-cap1.com, https://link-cap2.com, ...
+ *  id | id_autor | titulo | autor | estado | generos |
+ *  capitulos | cover | sinopsis | aprobacion |
+ *  cap1 | cap2 | cap3 | ... | cap50
  *
- *  Cambia SHEET_PUBHTML por la URL de tu Sheet de escritos.
+ *  Cada celda capN tiene el formato:  nombre del capítulo|link del doc
+ *  Ejemplo:  El inicio|https://docs.google.com/document/d/ABC123/edit
+ *
+ *  La columna "capitulos" puede ser una fórmula que cuente
+ *  cuántas celdas capN están llenas — no la tocamos.
  * ============================================================
  */
 
-const SHEET_PUBHTML = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR5dM8y0r6LSGZpI3E1wKgl3GFD0c_14lzeAuMEgNZgNdAMZjXcTeyvcDvjHFMx-MsggDUVEi9Vv4yr/pubhtml";
+const SHEET_PUBHTML = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQD34_S_uH0KrS_VR1QvtBCfK-zxnTDQjsjyOTFLP9gVS7HHBkmXw7nF1U5dIRKLKHPTWA-ZwC6dXZ4/pubhtml";
 const SHEET_ID = SHEET_PUBHTML.match(/\/d\/e\/([^/]+)/)?.[1] ?? "";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
 
+export const MAX_CAPS = 50;
+
 // ─────────────────────────────────────────────
-//  Convierte link de Drive a URL de imagen directa
+//  Convierte link de Drive → URL de imagen visible
 // ─────────────────────────────────────────────
-function fixCoverUrl(cover) {
+export function fixCoverUrl(cover) {
   if (!cover) return "";
+  const m = cover.match(/[-\w]{25,}/);
+  if (!m) return cover;
+  // Si parece un ID de Drive (sin http)
+  if (!cover.startsWith("http")) {
+    const direct = `https://drive.google.com/uc?export=view&id=${m[0]}`;
+    return `https://wsrv.nl/?url=${encodeURIComponent(direct)}&w=400&output=webp`;
+  }
+  // Si es un link completo de Drive
   const driveMatch = cover.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (driveMatch) {
-    const id = driveMatch[1];
-    const direct = `https://drive.google.com/uc?export=view&id=${id}`;
+    const direct = `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
     return `https://wsrv.nl/?url=${encodeURIComponent(direct)}&w=400&output=webp`;
   }
   return cover;
 }
 
 // ─────────────────────────────────────────────
-//  Convierte link de Google Doc a URL de texto plano
-//  Acepta: link completo del Doc, o solo el ID
+//  Convierte link de Google Doc → URL de texto plano exportable
 // ─────────────────────────────────────────────
 export function docLinkToTextUrl(link) {
   if (!link || !link.trim()) return null;
   link = link.trim();
-  
-  // Extraer ID si es un link completo
   const match = link.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);
-  const id = match ? match[1] : link; // si no hay match, asumimos que ya es el ID
-  
+  const id = match ? match[1] : link;
+  if (!id) return null;
   return `https://docs.google.com/document/d/${id}/export?format=txt`;
 }
 
@@ -77,56 +86,57 @@ function parseCSVLine(line) {
 function parseRow(headers, values) {
   const row = {};
   headers.forEach((h, i) => {
-    row[h.trim().toLowerCase().replace(/\s+/g, "-")] = (values[i] ?? "").trim();
+    row[h.trim().toLowerCase().replace(/\s+/g, "")] = (values[i] ?? "").trim();
   });
   
   const splitList = val =>
     val ? val.split(",").map(s => s.trim()).filter(Boolean) : [];
   
-  // ── Procesar volúmenes ──────────────────────
-  // Cada volumen es una celda con links separados por coma.
-  // Los links se convierten a URLs de exportación de texto.
-  const volumenes = [];
-  for (let v = 1; v <= 5; v++) {
-    const key = `volumen-${v}`;
-    const raw = row[key] || "";
-    const links = splitList(raw);
+  // ── Procesar capítulos cap1..cap50 ──────────
+  // Cada celda: "Nombre del capítulo|https://link-del-doc"
+  // Si no hay pipe, se trata todo como link sin nombre
+  const capitulos = [];
+  for (let i = 1; i <= MAX_CAPS; i++) {
+    const raw = row[`cap${i}`] || "";
+    if (!raw) continue;
     
-    if (links.length > 0) {
-      volumenes.push({
-        numero: v,
-        capitulos: links.map((link, idx) => ({
-          numero: idx + 1, // número local dentro del volumen
-          urlTexto: docLinkToTextUrl(link) // URL exportada de Google Docs
-        }))
-      });
-    }
+    const pipeIdx = raw.indexOf("|");
+    const nombre = pipeIdx >= 0 ? raw.slice(0, pipeIdx).trim() : `Capítulo ${i}`;
+    const link = pipeIdx >= 0 ? raw.slice(pipeIdx + 1).trim() : raw.trim();
+    
+    capitulos.push({
+      numero: i, // número real de la columna (cap1=1, cap5=5, etc.)
+      nombre,
+      urlTexto: docLinkToTextUrl(link),
+      rawLink: link, // guardamos el link original para el panel de autor
+    });
   }
   
-  // ── Número total de capítulos ───────────────
-  // Usa el valor del Sheet si existe, sino cuenta los links
-  const totalLinks = volumenes.reduce((acc, vol) => acc + vol.capitulos.length, 0);
-  const capCount = Number(row.capitulos) || totalLinks || 0;
+  const capCount = Number(row.capitulos) || capitulos.length || 0;
   
   return {
     id: Number(row.id) || 0,
+    id_autor: row.idautor || row.id_autor || "",
     titulo: row.titulo || "Sin título",
     autor: row.autor || "Anónimo",
     estado: row.estado || "en emisión",
     generos: splitList(row.generos),
     capitulos: capCount,
     cover: fixCoverUrl(row.cover || ""),
+    raw_cover: row.cover || "", // para el editor
     sinopsis: row.sinopsis || "Sin sinopsis.",
-    volumenes, // array de volúmenes con sus capítulos
+    aprobacion: row.aprobacion || "pendiente",
+    caps: capitulos, // array de capítulos [{numero, nombre, urlTexto, rawLink}]
   };
 }
 
 // ─────────────────────────────────────────────
-//  Carga el catálogo desde Google Sheets
+//  Carga pública desde Google Sheets
 // ─────────────────────────────────────────────
 export async function loadEscritos() {
   try {
-    const res = await fetch(SHEET_URL);
+    const url = `${SHEET_URL}&_t=${Date.now()}`;
+    const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     
     const text = await res.text();
