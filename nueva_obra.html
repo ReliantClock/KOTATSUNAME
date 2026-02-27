@@ -29,6 +29,7 @@
 
     .editor-header { margin-bottom: 36px; padding-bottom: 20px; border-bottom: 2px solid var(--accent); }
     .editor-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent3); margin-bottom: 10px; display: block; }
+
     .title-input {
       width: 100%; background: rgba(255,255,255,0.05); border: 1px solid transparent;
       color: #fff; font-family: 'Cinzel Decorative'; font-size: clamp(1.3rem, 4vw, 1.9rem);
@@ -36,7 +37,10 @@
     }
     .title-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.08); }
     .title-input::placeholder { color: rgba(255,255,255,0.25); }
+
     .author-ref { color: var(--accent3); font-size: 0.95rem; margin-top: 8px; }
+    /* Muestra el id en pequeño para confirmar que está presente */
+    .author-ref .id-tag { font-size: 0.7rem; color: var(--text-muted); margin-left: 8px; font-family: monospace; }
 
     .section { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--border); }
     .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent3); margin-bottom: 18px; display: block; }
@@ -63,9 +67,9 @@
     }
     .btn-cancel:hover { border-color: var(--accent); color: var(--accent); }
     .btn-save {
-      background: linear-gradient(135deg, var(--accent), #7c3aed); border: none;
-      color: #fff; padding: 13px 28px; border-radius: 12px; font-family: 'Rajdhani';
-      font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s;
+      background: linear-gradient(135deg, var(--accent), #7c3aed); border: none; color: #fff;
+      padding: 13px 28px; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 700;
+      font-size: 0.9rem; cursor: pointer; transition: 0.2s;
       box-shadow: 0 6px 20px rgba(230,62,109,0.3);
       display: flex; align-items: center; gap: 10px;
     }
@@ -82,15 +86,18 @@
   <div class="bg-grid"></div>
 
   <nav class="top-nav">
-    <span class="brand">KOTATSUNAME</span>
-    <a href="panel_autor.html" class="nav-btn">Volver</a>
+    <span class="brand">KOTATSU</span>
+    <a href="panel_autor.html" class="nav-btn">← Volver</a>
   </nav>
 
   <div class="editor">
     <header class="editor-header">
       <span class="editor-label" id="modeLabel">Nuevo Manuscrito</span>
       <input type="text" class="title-input" id="titulo" placeholder="Título de la Obra..." />
-      <p class="author-ref">Autor: <strong id="autorName"></strong></p>
+      <p class="author-ref">
+        Autor: <strong id="autorName"></strong>
+        <span class="id-tag" id="autorIdTag"></span>
+      </p>
     </header>
 
     <section class="section">
@@ -148,21 +155,25 @@
   <script type="module">
     import { loadEscritos } from "./escritos_data.js";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQzNc0nIF-14E6E7_Th_dw-rKycHGfnR_jGRTSK0j8kZCsghjSzEH1VpK3g0HUz2o3/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZAS5mnuxQ_JlVk_ftcmIA7CUqvfgJqJt9a5QO9OmmCkDo0dW-NXkEdxA37aFtvXmc/exec";
 
-    const params  = new URLSearchParams(window.location.search);
-    const editId  = params.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get("id");
 
-    // ── Leer sesión — siempre como string para comparaciones seguras
-    const idAutor = String(localStorage.getItem("ktt_id")   || "");
-    const user    = String(localStorage.getItem("ktt_user") || "");
+    // Leer sesión — trim() elimina espacios/saltos que pudieran haberse colado
+    const idAutor = (localStorage.getItem("ktt_id")   || "").trim();
+    const user    = (localStorage.getItem("ktt_user") || "").trim();
 
+    // Si no hay sesión, redirigir
     if (!idAutor || idAutor === "null") {
       window.location.href = "registrarse.html";
     }
 
-    document.getElementById("autorName").textContent = user || "Anónimo";
+    // Mostrar datos del autor en la cabecera
+    document.getElementById("autorName").textContent   = user || "Anónimo";
+    document.getElementById("autorIdTag").textContent  = `[${idAutor}]`;
 
+    // Modo edición
     if (editId) {
       document.getElementById("modeLabel").textContent = "Editando Manuscrito";
       document.getElementById("saveTxt").textContent   = "Guardar Cambios ✦";
@@ -176,7 +187,8 @@
 
       document.getElementById("titulo").value   = obra.titulo   || "";
       document.getElementById("sinopsis").value = obra.sinopsis || "";
-      document.getElementById("generos").value  = Array.isArray(obra.generos) ? obra.generos.join(", ") : obra.generos;
+      document.getElementById("generos").value  = Array.isArray(obra.generos)
+        ? obra.generos.join(", ") : (obra.generos || "");
       document.getElementById("cover").value    = obra.raw_cover || "";
       document.getElementById("estado").value   = obra.estado   || "en emisión";
 
@@ -196,9 +208,9 @@
 
       if (!titulo) { errEl.textContent = "El título es obligatorio."; return; }
 
-      // Verificar que tenemos id de autor antes de enviar
-      if (!idAutor || idAutor === "null" || idAutor === "") {
-        errEl.textContent = "Sesión expirada. Vuelve a iniciar sesión.";
+      // Doble verificación del id antes de enviar
+      if (!idAutor || idAutor === "null") {
+        errEl.textContent = "Sesión expirada. Redirigiendo...";
         setTimeout(() => window.location.href = "registrarse.html", 1500);
         return;
       }
@@ -208,15 +220,15 @@
       txt.style.display     = "none";
       errEl.textContent     = "";
 
-      // Extraer ID limpio de Drive si pegaron el link completo
-      let coverVal = document.getElementById("cover").value.trim();
+      // Limpiar cover: extraer solo el ID de Drive si pegaron el link completo
+      let coverVal  = document.getElementById("cover").value.trim();
       const driveId = coverVal.match(/[-\w]{25,}/);
       if (driveId) coverVal = driveId[0];
 
       const payload = {
         action      : editId ? "editarObra" : "nuevaObra",
-        idObra      : editId || null,
-        idAutor     : idAutor,        // ktt_xxx — siempre viene del localStorage
+        idObra      : editId  || null,
+        idAutor     : idAutor,          // ← ktt_xxx, siempre presente
         nombreAutor : user,
         titulo,
         sinopsis    : document.getElementById("sinopsis").value.trim(),
@@ -227,6 +239,9 @@
         cap1link    : document.getElementById("cap1link").value.trim(),
       };
 
+      // Log para confirmar que el id va correctamente (puedes quitarlo luego)
+      console.log("Enviando payload:", payload);
+
       try {
         await fetch(SCRIPT_URL, {
           method : "POST",
@@ -235,11 +250,9 @@
           body   : JSON.stringify(payload),
         });
 
-        // Marcamos que hay que recargar el panel cuando volvamos
+        // Flag para que el panel recargue los datos frescos
         sessionStorage.setItem("panel_reload", "1");
-
-        // Esperar un poco para que el Sheet procese y redirigir
-        setTimeout(() => { window.location.href = "panel_autor.html"; }, 1200);
+        setTimeout(() => { window.location.href = "panel_autor.html"; }, 1500);
 
       } catch (e) {
         errEl.textContent     = "Error de conexión. Intenta de nuevo.";
