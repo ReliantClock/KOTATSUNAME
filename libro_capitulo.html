@@ -7,199 +7,98 @@
   <link rel="stylesheet" href="buscador.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    /* ── Página de lectura ── */
     .reading-page {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 36px 20px 100px;
-      position: relative;
-      z-index: 1;
+      max-width: 760px; margin: 0 auto;
+      padding: 36px 20px 100px; position: relative; z-index: 1;
     }
-
     .nav-btn {
-      display: inline-block;
-      text-decoration: none;
-      background: transparent;
-      padding: 8px 18px;
-      border-radius: 5px;
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      border: 1px solid var(--accent);
-      cursor: pointer;
-      transition: all 0.3s;
+      display: inline-block; text-decoration: none; background: transparent;
+      padding: 8px 18px; border-radius: 5px; color: #fff;
+      font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.1em; border: 1px solid var(--accent); cursor: pointer; transition: all 0.3s;
     }
     .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
 
-    .read-header {
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 40px;
-      padding-bottom: 20px;
+    .read-header { border-bottom: 1px solid var(--border); margin-bottom: 40px; padding-bottom: 20px; }
+    .read-header .cap-number {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
     }
     .read-header h1 {
-      font-family: var(--font-display);
-      font-size: clamp(1.2rem, 4vw, 1.8rem);
-      color: var(--accent);
-      margin-bottom: 6px;
+      font-family: var(--font-display); font-size: clamp(1.2rem, 4vw, 1.8rem);
+      color: var(--text); margin-bottom: 8px; line-height: 1.2;
     }
-    .read-header p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      font-style: italic;
-    }
+    .read-header .book-ref { font-size: 0.9rem; color: var(--text-muted); font-style: italic; }
 
-    /* Texto de lectura */
     .reading-text {
-      font-size: 1.15rem;
-      line-height: 1.9;
-      color: #ddd;
-      white-space: pre-wrap;
-      font-family: 'Rajdhani', sans-serif;
-      min-height: 200px;
+      font-size: 1.15rem; line-height: 1.9; color: #ddd;
+      white-space: pre-wrap; font-family: 'Rajdhani', sans-serif; min-height: 200px;
     }
-
-    /* Estado de carga */
     .loading-text {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      padding: 40px 0;
+      display: flex; align-items: center; gap: 12px;
+      color: var(--text-muted); font-size: 0.95rem; padding: 40px 0;
     }
     .loading-text::before {
-      content: "";
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
+      content: ""; width: 18px; height: 18px;
+      border: 2px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Navegación entre capítulos */
     .chapter-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 80px;
-      padding-top: 32px;
-      border-top: 1px solid var(--border);
-      gap: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--border); gap: 12px;
     }
     .nav-cap-btn {
-      text-decoration: none;
-      background: transparent;
-      padding: 12px 20px;
-      border-radius: 8px;
-      color: rgba(255,255,255,0.7);
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-align: center;
-      flex: 1;
-      max-width: 160px;
+      text-decoration: none; background: transparent; padding: 12px 20px;
+      border-radius: 8px; color: rgba(255,255,255,0.7);
+      font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.3s ease;
+      text-align: center; flex: 1; max-width: 160px;
     }
     .nav-cap-btn:hover:not(.disabled) {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 15px rgba(230,62,109,0.4);
+      background: var(--accent); border-color: var(--accent);
+      color: #fff; box-shadow: 0 0 15px rgba(230,62,109,0.4);
     }
-    .nav-cap-btn.disabled {
-      opacity: 0;
-      pointer-events: none;
-    }
-    .nav-cap-btn.index-btn {
-      max-width: 120px;
-      border-color: var(--border);
-      color: var(--text-muted);
-    }
-    .nav-cap-btn.index-btn:hover {
-      border-color: var(--accent3);
-      color: var(--accent3);
-      background: rgba(6,182,212,0.08);
-      box-shadow: none;
-    }
-    /* Fin de capítulo */
-    .chapter-end {
-      text-align: center;
-      margin-top: 60px;
-      padding: 30px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border-top: 1px solid var(--border);
-    }
+    .nav-cap-btn.disabled { opacity: 0; pointer-events: none; }
+    .nav-cap-btn.index-btn { max-width: 120px; border-color: var(--border); color: var(--text-muted); }
+    .nav-cap-btn.index-btn:hover { border-color: var(--accent3); color: var(--accent3); background: rgba(6,182,212,0.08); box-shadow: none; }
 
-    /* Controles de fuente */
-    .font-controls {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      display: flex;
-      gap: 8px;
-      z-index: 100;
+    .chapter-end {
+      text-align: center; margin-top: 60px; padding: 30px;
+      color: var(--text-muted); font-size: 0.85rem;
+      letter-spacing: 0.15em; text-transform: uppercase; border-top: 1px solid var(--border);
     }
+    .font-controls { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 8px; z-index: 100; }
     .control-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 14px;
-      cursor: pointer;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      font-family: var(--font-body);
-      transition: all 0.2s;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      padding: 10px 14px; cursor: pointer; border-radius: 8px;
+      font-size: 0.85rem; font-weight: 700; font-family: var(--font-body); transition: all 0.2s;
     }
-    .control-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    
-    #btnCompartir:hover {
-  background: rgba(6, 182, 212, 0.1);
-  /* Un tono cian suave */
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
-}
+    .control-btn:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
   <div class="bg-grid"></div>
 
   <div class="reading-page">
-    <!-- Nav superior -->
-<nav style="margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center;">
-  <button id="btnVolver" class="nav-btn">Volver al índice</button>
-  <button id="btnCompartir" class="nav-btn" style="border-color: var(--accent3); color: var(--accent3);">
-    Compartir</button>
-</nav>
+    <nav style="margin-bottom:28px; display:flex; justify-content:space-between; align-items:center;">
+      <button id="btnVolver" class="nav-btn">Volver</button>
+      <button id="btnCompartir" class="nav-btn" style="border-color:var(--accent3);color:var(--accent3);">Compartir</button>
+    </nav>
 
-
-    <!-- Cabecera del capítulo -->
     <header class="read-header">
+      <p class="cap-number" id="capNumber"></p>
       <h1 id="capTitle">Cargando...</h1>
-      <p id="bookRef"></p>
+      <p class="book-ref" id="bookRef"></p>
     </header>
 
-    <!-- Contenido -->
     <article id="capContent" class="reading-text">
       <div class="loading-text">Consultando los archivos...</div>
     </article>
 
-    <!-- Fin del capítulo -->
     <div class="chapter-end">✦ Fin del capítulo ✦</div>
 
-    <!-- Navegación inferior -->
     <footer class="chapter-nav">
       <button id="btnPrev" class="nav-cap-btn disabled">Anterior</button>
       <button id="btnIndex" class="nav-cap-btn index-btn">Índice</button>
@@ -207,164 +106,136 @@
     </footer>
   </div>
 
-  <!-- Controles de fuente -->
   <div class="font-controls">
     <button class="control-btn" id="fontDown">A−</button>
     <button class="control-btn" id="fontUp">A+</button>
   </div>
 
-<script type="module">
-  import { loadEscritos } from "./escritos_data.js";
+  <script type="module">
+    import { loadEscritos } from "./escritos_data.js";
 
-  // ── Parámetros de la URL
-  const params  = new URLSearchParams(window.location.search);
-  const libroId = params.get("id");
-  const volNum  = parseInt(params.get("vol"))  || 1;
-  const capNum  = parseInt(params.get("cap"))  || 1;
-  const gnum    = parseInt(params.get("gnum")) || 1; 
+    const params    = new URLSearchParams(window.location.search);
+    const libroId   = params.get("id");
+    // num = número real de la columna (cap1=1, cap5=5...)
+    const numCap    = parseInt(params.get("num"))  || 1;
+    // gnum = posición secuencial en la lista (1, 2, 3...)
+    const gnum      = parseInt(params.get("gnum")) || 1;
+    const nombreCap = decodeURIComponent(params.get("nombre") || "");
 
-  let fontSize = 1.15;
-
-  // ── Construir URL de navegación
-  function buildNavUrl(libro, targetGnum) {
-    let accumulated = 0;
-    for (const vol of libro.volumenes) {
-      for (const cap of vol.capitulos) {
-        accumulated++;
-        if (accumulated === targetGnum) {
-          return {
-            fullUrl: `libro_capitulo.html?id=${libroId}&vol=${vol.numero}&cap=${cap.numero}&gnum=${targetGnum}`,
-            rawTextUrl: cap.urlTexto 
-          };
-        }
-      }
-    }
-    return null;
-  }
-
-  // ── Función de Precarga
-  async function precargarSiguiente(libro, siguienteGnum) {
-    const nextData = buildNavUrl(libro, siguienteGnum);
-    if (nextData && nextData.rawTextUrl) {
-      console.log(`Precargando texto del capítulo ${siguienteGnum}...`);
-      fetch(nextData.rawTextUrl, { priority: 'low' }).catch(() => {});
-      
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = nextData.rawTextUrl;
-      document.head.appendChild(link);
-    }
-  }
-
-  // ── Función Compartir Capítulo
-  async function configurarBotonCompartir(libro) {
-    const btnCompartir = document.getElementById("btnCompartir");
-    if (!btnCompartir) return;
-
-    btnCompartir.addEventListener("click", async () => {
-      const shareData = {
-        title: `KotatsuName - ${libro.titulo}`,
-        text: `Lee el Capítulo ${gnum} de "${libro.titulo}" en KotatsuName `,
-        url: window.location.href
-      };
-
-      try {
-        if (navigator.share) {
-          await navigator.share(shareData);
-        } else {
-          await navigator.clipboard.writeText(window.location.href);
-          const originalText = btnCompartir.textContent;
-          btnCompartir.textContent = "Copiado";
-          setTimeout(() => { btnCompartir.textContent = originalText; }, 2000);
-        }
-      } catch (err) {
-        console.log("Error al compartir:", err);
-      }
-    });
-  }
-
-  // ── Carga y renderiza el capítulo
-  async function cargarCapitulo() {
-    if (!libroId) { window.location.href = "escritos.html"; return; }
-
-    const libros = await loadEscritos();
-    const libro  = libros.find(l => l.id == libroId);
-
-    if (!libro) { window.location.href = "escritos.html"; return; }
-
-    // Activar botón compartir con los datos del libro
-    configurarBotonCompartir(libro);
-
-    // Títulos
-    document.getElementById("capTitle").textContent = `Capítulo ${gnum}`;
-    document.getElementById("bookRef").textContent  = libro.titulo;
-    document.title = `Cap. ${gnum} — ${libro.titulo}`;
-
-    const volData = libro.volumenes.find(v => v.numero === volNum);
-    const capData = volData?.capitulos.find(c => c.numero === capNum);
-    const content = document.getElementById("capContent");
-
-    if (!capData || !capData.urlTexto) {
-      content.textContent = "Este capítulo aún no tiene contenido disponible.";
-    } else {
-      try {
-        const res  = await fetch(capData.urlTexto);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const texto = await res.text();
-        content.textContent = texto.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
-        window.scrollTo(0, 0);
-        
-        // --- INICIO PRECARGA ---
-        const totalCaps = libro.volumenes.reduce((acc, v) => acc + v.capitulos.length, 0);
-        if (gnum < totalCaps) {
-          setTimeout(() => precargarSiguiente(libro, gnum + 1), 5000);
-        }
-        // --- FIN PRECARGA ---
-
-      } catch (e) {
-        content.textContent = "No se pudo cargar el contenido. Verifica la conexión.";
-      }
-    }
-
-    // ── Navegación
-    const totalCaps = libro.volumenes.reduce((acc, v) => acc + v.capitulos.length, 0);
-    const btnPrev  = document.getElementById("btnPrev");
-    const btnNext  = document.getElementById("btnNext");
-    const btnIndex = document.getElementById("btnIndex");
-
-    if (gnum > 1) {
-      const prevData = buildNavUrl(libro, gnum - 1);
-      btnPrev.textContent = "⇠ Anterior";
-      btnPrev.classList.remove("disabled");
-      btnPrev.addEventListener("click", () => { window.location.href = prevData.fullUrl; });
-    }
-
-    if (gnum < totalCaps) {
-      const nextData = buildNavUrl(libro, gnum + 1);
-      btnNext.textContent = "Siguiente ⇢";
-      btnNext.classList.remove("disabled");
-      btnNext.addEventListener("click", () => { window.location.href = nextData.fullUrl; });
-    }
-
+    let fontSize = 1.15;
     const indexUrl = `escritos_capitulos.html?id=${libroId}`;
-    btnIndex.addEventListener("click", () => { window.location.href = indexUrl; });
-    document.getElementById("btnVolver").addEventListener("click", () => {
-      window.location.href = indexUrl;
+
+    // Construir URL de navegación por posición (gnum)
+    // gnum es base-1, caps[] es base-0
+    function buildNavUrl(caps, targetGnum) {
+      const cap = caps[targetGnum - 1]; // gnum 1 → índice 0
+      if (!cap) return null;
+      return `libro_capitulo.html?id=${libroId}&num=${cap.numero}&gnum=${targetGnum}&nombre=${encodeURIComponent(cap.nombre || "")}`;
+    }
+
+    function configurarCompartir(libro, capNombre) {
+      const btn = document.getElementById("btnCompartir");
+      if (!btn) return;
+      btn.addEventListener("click", async () => {
+        const data = {
+          title: `KotatsuName — ${libro.titulo}`,
+          text : `Lee el Capítulo ${gnum}${capNombre ? `: "${capNombre}"` : ""} de "${libro.titulo}" en KotatsuName`,
+          url  : window.location.href,
+        };
+        try {
+          if (navigator.share) { await navigator.share(data); }
+          else {
+            await navigator.clipboard.writeText(window.location.href);
+            const orig = btn.textContent;
+            btn.textContent = "✓ Copiado";
+            setTimeout(() => { btn.textContent = orig; }, 2000);
+          }
+        } catch (e) {}
+      });
+    }
+
+    async function cargarCapitulo() {
+      if (!libroId) { window.location.href = "escritos.html"; return; }
+
+      const libros = await loadEscritos();
+      const libro  = libros.find(l => l.id == libroId);
+      if (!libro)  { window.location.href = "escritos.html"; return; }
+
+      const caps = libro.caps || [];
+
+      // Capítulo actual: buscamos por número de columna real (num)
+      const capActual = caps.find(c => c.numero === numCap);
+
+      // Nombre real: del objeto o del parámetro URL como fallback
+      const capNombreReal = capActual?.nombre || nombreCap || `Capítulo ${gnum}`;
+
+      // ── Cabecera ──
+      document.getElementById("capNumber").textContent = `Capítulo ${gnum}`;
+      document.getElementById("capTitle").textContent  = capNombreReal;
+      document.getElementById("bookRef").textContent   = libro.titulo;
+      document.title = `${capNombreReal} — ${libro.titulo}`;
+
+      configurarCompartir(libro, capNombreReal);
+
+      // ── Contenido ──
+      const content = document.getElementById("capContent");
+
+      if (!capActual?.urlTexto) {
+        content.textContent = "Este capítulo aún no tiene contenido disponible.";
+      } else {
+        try {
+          const res   = await fetch(capActual.urlTexto);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const texto = await res.text();
+          content.textContent = texto.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+          window.scrollTo(0, 0);
+
+          // Precargar siguiente
+          if (gnum < caps.length) {
+            setTimeout(() => {
+              const siguiente = caps[gnum]; // gnum es base-1, caps es base-0 → caps[gnum] = siguiente
+              if (siguiente?.urlTexto) fetch(siguiente.urlTexto, { priority: "low" }).catch(() => {});
+            }, 5000);
+          }
+        } catch (e) {
+          content.textContent = "No se pudo cargar el contenido. Verifica la conexión o el permiso del documento.";
+        }
+      }
+
+      // ── Navegación ──
+      const total   = caps.length;
+      const btnPrev = document.getElementById("btnPrev");
+      const btnNext = document.getElementById("btnNext");
+      const btnIdx  = document.getElementById("btnIndex");
+
+      if (gnum > 1) {
+        const url = buildNavUrl(caps, gnum - 1);
+        btnPrev.textContent = "Anterior";
+        btnPrev.classList.remove("disabled");
+        btnPrev.addEventListener("click", () => { window.location.href = url; });
+      }
+
+      if (gnum < total) {
+        const url = buildNavUrl(caps, gnum + 1);
+        btnNext.textContent = "Siguiente";
+        btnNext.classList.remove("disabled");
+        btnNext.addEventListener("click", () => { window.location.href = url; });
+      }
+
+      btnIdx.addEventListener("click", () => { window.location.href = indexUrl; });
+      document.getElementById("btnVolver").addEventListener("click", () => { window.location.href = indexUrl; });
+    }
+
+    document.getElementById("fontUp").addEventListener("click", () => {
+      fontSize = Math.min(fontSize + 0.1, 2.0);
+      document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
     });
-  }
+    document.getElementById("fontDown").addEventListener("click", () => {
+      fontSize = Math.max(fontSize - 0.1, 0.8);
+      document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
+    });
 
-  // ── Controles de fuente
-  document.getElementById("fontUp").addEventListener("click", () => {
-    fontSize = Math.min(fontSize + 0.1, 2.0);
-    document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
-  });
-  document.getElementById("fontDown").addEventListener("click", () => {
-    fontSize = Math.max(fontSize - 0.1, 0.8);
-    document.getElementById("capContent").style.fontSize = `${fontSize}rem`;
-  });
-
-  cargarCapitulo();
-</script>
-
+    cargarCapitulo();
+  </script>
 </body>
 </html>
