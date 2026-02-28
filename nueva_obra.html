@@ -86,8 +86,8 @@
   <div class="bg-grid"></div>
 
   <nav class="top-nav">
-    <span class="brand">KOTATSU</span>
-    <a href="panel_autor.html" class="nav-btn">← Volver</a>
+    <span class="brand">KOTATSUNAME</span>
+    <a href="panel_autor.html" class="nav-btn">Volver</a>
   </nav>
 
   <div class="editor">
@@ -148,14 +148,14 @@
     <button class="btn-cancel" onclick="window.location.href='panel_autor.html'">Cancelar</button>
     <button class="btn-save" id="btnSave" onclick="guardar()">
       <div class="spinner" id="spinner"></div>
-      <span id="saveTxt">Publicar Obra ✦</span>
+      <span id="saveTxt">Publicar Obra </span>
     </button>
   </div>
 
   <script type="module">
     import { loadEscritos } from "./escritos_data.js";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZAS5mnuxQ_JlVk_ftcmIA7CUqvfgJqJt9a5QO9OmmCkDo0dW-NXkEdxA37aFtvXmc/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT_nZyhJIpjUEpg-C-e7jvuJvYkyf2Px4nxrzVON7Qwc3rBPbDGsPeJ0kpnT9Ttvky/exec";
 
     const params = new URLSearchParams(window.location.search);
     const editId = params.get("id");
