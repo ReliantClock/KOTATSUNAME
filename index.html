@@ -58,6 +58,81 @@
       transition: all 0.3s;
     }
     .sidebar-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+    
+        /* BOTÓN DE INSTALACIÓN (Oculto por defecto) */
+    #pwaInstallBtn { display: none; margin-left: 10px; }
+
+    /* MODAL DE GUÍA RESPONSIVE */
+    .guide-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .guide-overlay.active { display: flex; }
+
+    .guide-card {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      width: 100%;
+      max-width: 400px;
+      padding: 25px;
+      border-radius: var(--radius);
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .guide-title {
+      font-family: var(--font-display);
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .guide-step {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      background: var(--accent);
+      color: white;
+      min-width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .guide-step p {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .guide-close {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: none; border: none;
+      color: var(--text-muted); cursor: pointer; font-size: 1.2rem;
+    }
+
+    @media (max-width: 480px) {
+      .guide-card { padding: 20px; }
+      .guide-step p { font-size: 0.9rem; }
+    }
   </style>
 </head>
 <body>
@@ -66,9 +141,8 @@
   <div class="bg-glow"></div>
 
   <div class="wrapper">
-                  <a href="registrarse.html" class="sidebar-btn">👤</a><button id="installBtn" class="nav-btn" style="display: none; margin-left: 10px;">Instalar App
-</button>
-
+                  <a href="registrarse.html" class="sidebar-btn">👤</a>
+                  <button id="pwaInstallBtn" class="nav-btn">INSTALAR APP</button>
 
     <header class="header">
       <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
@@ -143,6 +217,40 @@
       <span class="empty-icon"></span>
       <p>No se encontraron relatos en los archivos...</p>
     </div>
+    
+    
+<div id="pwaModal" class="guide-overlay">
+  <div class="guide-card">
+    <button class="guide-close" id="closeGuide">✕</button>
+    <div class="guide-title">INSTALACIÓN</div>
+    
+    <div class="guide-step">
+      <div class="step-num">1</div>
+      <p>Toca los <strong>tres puntos (⋮)</strong> en el navegador.</p>
+    </div>
+    <div class="guide-step">
+      <div class="step-num">2</div>
+      <p>Selecciona <strong>"Agregar a la pantalla principal"</strong>.</p>
+    </div>
+    
+    <div class="guide-step">
+      <div class="step-num">3</div>
+      <p>Pulsa en <strong>"Instalar"</strong>.</p>
+    </div>
+
+    <div id="pwaActions" style="margin-top: 20px;">
+      <button class="nav-btn" id="btnEntendido" style="width: 100%;">ENTENDIDO</button>
+      
+      <a href="https://drive.usercontent.google.com/download?id=11_aK3QQyQMRh81Wz-5BPiruSHz7LflDd&export=download&authuser=0" 
+         class="nav-btn" 
+         id="btnDescargar" 
+         style="display: none; width: 100%; text-align: center; text-decoration: none; box-sizing: border-box;">
+         DESCARGAR APK DIRECTO
+      </a>
+    </div>
+  </div>
+</div>
+
 
   </div><!-- /wrapper -->
 
@@ -171,58 +279,63 @@
     </div>
   </div>
 
-  <!-- Toggle de géneros -->
-  <script>
-    const toggle    = document.getElementById("genresToggle");
-    const container = document.getElementById("generoFilter");
-    if (toggle) {
-      toggle.addEventListener("click", () => {
-        const collapsed = container.classList.toggle("genres-collapsed");
-        container.classList.toggle("genres-expanded", !collapsed);
-        toggle.textContent = collapsed ? "Ver todos ▾" : "Ver menos ▴";
-      });
+<script>
+  (function() {
+    const installBtn = document.getElementById('pwaInstallBtn');
+    const modal = document.getElementById('pwaModal');
+    const closeBtn = document.getElementById('closeGuide');
+    const btnEntendido = document.getElementById('btnEntendido');
+    const btnDescargar = document.getElementById('btnDescargar');
+
+    // Función para intercambiar botones
+    const alternarBotones = () => {
+      // Obtenemos el número de veces que se ha abierto (por defecto 0)
+      let visitas = parseInt(localStorage.getItem('pwaVisits')) || 0;
+      visitas++; 
+      
+      // Si la visita es impar (1, 3, 5...) muestra Entendido
+      // Si la visita es par (2, 4, 6...) muestra Descarga
+      if (visitas % 2 !== 0) {
+        btnEntendido.style.display = 'block';
+        btnDescargar.style.display = 'none';
+      } else {
+        btnEntendido.style.display = 'none';
+        btnDescargar.style.display = 'block';
+      }
+      
+      // Guardamos el nuevo número de visita
+      localStorage.setItem('pwaVisits', visitas);
+    };
+
+    // Mostrar el botón principal solo si no es PWA instalada
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+      if (installBtn) installBtn.style.display = 'inline-block';
     }
-  </script>
 
-  <script type="module" src="escritos_buscador.js"></script>
-  
-  
-  <script>
-  let deferredPrompt;
-  const installBtn = document.getElementById('installBtn');
-
-  // 1. Escuchar el evento de instalación del navegador
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Evitar que Chrome muestre su propio aviso automático
-    e.preventDefault();
-    // Guardar el evento para dispararlo luego
-    deferredPrompt = e;
-    // Mostrar nuestro botón personalizado
-    installBtn.style.display = 'inline-block';
-  });
-
-  // 2. Lógica al hacer clic en el botón
-  installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
-      // Mostrar el prompt nativo
-      deferredPrompt.prompt();
-      // Esperar la respuesta del usuario
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`Usuario respondió a la instalación: ${outcome}`);
-      // Limpiar la variable, ya no se puede usar de nuevo
-      deferredPrompt = null;
-      // Ocultar el botón después de la acción
-      installBtn.style.display = 'none';
+    // Al abrir el modal, ejecutamos el intercambio
+    if (installBtn) {
+      installBtn.onclick = () => {
+        alternarBotones();
+        modal.classList.add('active');
+      };
     }
-  });
 
-  // 3. Ocultar el botón si la app ya se instaló con éxito
-  window.addEventListener('appinstalled', (evt) => {
-    console.log('KOTATSUNAME: Instalada con éxito');
-    installBtn.style.display = 'none';
-  });
+    // Funciones para cerrar
+    const cerrar = () => modal.classList.remove('active');
+    
+    if (closeBtn) closeBtn.onclick = cerrar;
+    if (btnEntendido) btnEntendido.onclick = cerrar;
+    if (btnDescargar) btnDescargar.onclick = cerrar;
+
+    // Cerrar si tocan fuera de la tarjeta
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) cerrar();
+    });
+  })();
 </script>
 
+
+  <script type="module" src="escritos_buscador.js"></script>
 
 </body>
 </html>
