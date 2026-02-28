@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KOTATSUNAME - Libros y Relatos</title>
+  <link rel="stylesheet" href="buscador.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+    
+  <meta name="theme-color" content="#0a0a0f">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="manifest" href="/manifest.json">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('PWA Kotatsu: Service Worker registrado'))
+        .catch(err => console.log('PWA Kotatsu: Error al registrar Service Worker', err));
+    });
+  }
+</script>
+
+  <style>
+    .nav-btn {
+      text-decoration: none;
+      background: transparent;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+    
+        .sidebar-btn {
+      text-decoration: none;
+      background: transparent;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .sidebar-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="wrapper">
+                  <a href="registrarse.html" class="sidebar-btn">👤</a>
+
+    <header class="header">
+      <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
+      <p class="tagline">Crónicas, relatos y leyendas originales</p>
+      
+
+    </header>
+
+    <!-- BARRA DE BÚSQUEDA -->
+    <div class="search-bar">
+      <span class="search-icon"></span>
+      <input type="text" id="searchInput" placeholder="Buscar por título o autor..." autocomplete="off" />
+      <button id="clearBtn" class="clear-btn" title="Limpiar">✕</button>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filters-panel">
+
+      <!-- Géneros -->
+      <div class="filter-group">
+        <div class="filter-label-row">
+          <label class="filter-label">Género Literario</label>
+          <button class="genres-toggle" id="genresToggle">Ver todos ▾</button>
+        </div>
+        <div class="tag-group genres-collapsed" id="generoFilter">
+          <button class="tag active" data-filter="genero" data-value="">Todos</button>
+          <button class="tag" data-filter="genero" data-value="romance">Romance</button>
+          <button class="tag" data-filter="genero" data-value="fantasía">Fantasía</button>
+          <button class="tag" data-filter="genero" data-value="otro-mundo">Otro Mundo</button>
+          <button class="tag" data-filter="genero" data-value="terror">Terror</button>
+          <button class="tag" data-filter="genero" data-value="acción">Acción</button>
+          <button class="tag" data-filter="genero" data-value="misterio">Misterio</button>
+          <button class="tag" data-filter="genero" data-value="drama">Drama</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="aventura">Aventura</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="psicológico">Psicológico</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="one-shot">One-shot</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="poesía">Poesía</button>
+          <button class="tag genre-extra" data-filter="genero" data-value="ciencia-ficción">Sci-Fi</button>
+        </div>
+      </div>
+
+      <!-- Extensión -->
+      <div class="filter-group" style="display: none">
+        <label class="filter-label">Extensión (Capítulos)</label>
+        <div class="range-row">
+          <span class="range-label">Mín</span>
+          <input type="range" id="capsMin" min="1" max="50" value="1" />
+          <span id="capsMinVal" class="range-val">1</span>
+          <span class="range-label">Máx</span>
+          <input type="range" id="capsMax" min="1" max="50" value="50" />
+          <span id="capsMaxVal" class="range-val">50+</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <button id="resetFilters" class="reset-btn">↺ Resetear Biblioteca</button>
+        <a href="index.html" class="nav-btn">Volver a Series</a>
+      </div>
+
+    </div>
+
+    <!-- CONTADOR -->
+    <div class="results-header">
+      <span id="resultCount" class="result-count">Cargando biblioteca...</span>
+    </div>
+
+    <!-- GRID -->
+    <div id="resultsGrid" class="results-grid"></div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="empty-state hidden">
+      <span class="empty-icon"></span>
+      <p>No se encontraron relatos en los archivos...</p>
+    </div>
+
+  </div><!-- /wrapper -->
+
+  <!-- ====== MODAL ====== -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+
+      <button class="modal-close" id="modalClose" aria-label="Cerrar">✕</button>
+
+      <div class="modal-cover" id="modalCover"></div>
+
+      <div class="modal-content">
+        <div class="modal-badge" id="modalBadge">Escrito Original</div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+
+        <div class="modal-tags" id="modalTags"></div>
+
+        <p class="modal-sinopsis" id="modalSinopsis"></p>
+
+        <div class="modal-footer">
+          <span class="modal-seasons" id="modalSeasons"></span>
+          <div class="modal-btns" id="modalBtns"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toggle de géneros -->
+  <script>
+    const toggle    = document.getElementById("genresToggle");
+    const container = document.getElementById("generoFilter");
+    if (toggle) {
+      toggle.addEventListener("click", () => {
+        const collapsed = container.classList.toggle("genres-collapsed");
+        container.classList.toggle("genres-expanded", !collapsed);
+        toggle.textContent = collapsed ? "Ver todos ▾" : "Ver menos ▴";
+      });
+    }
+  </script>
+
+  <script type="module" src="escritos_buscador.js"></script>
+
+</body>
+</html>
