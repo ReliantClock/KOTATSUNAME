@@ -163,8 +163,8 @@
 
     <!-- Solo se muestra si hay obras en el sheet pero ninguna coincide con el autor -->
     <div class="debug-box" id="debugBox">
-Parece que aún no tienes ninguna obra publicada o ninguna coincide  on tu id.<br>
-      Tu ID: <code id="debugMiId"></code>
+      Aún no haz duplicado algo o tu id no coincide.<br>
+      Tu ID: <code id="debugMiId"></code><
     </div>
 
   </main>
@@ -239,7 +239,7 @@ Parece que aún no tienes ninguna obra publicada o ninguna coincide  on tu id.<b
             const todosIds = [...new Set(todas.map(o => o.id_autor))].join(", ");
             document.getElementById("debugBox").style.display = "block";
             document.getElementById("debugMiId").textContent  = idAutor;
-            document.getElementById("debugIds").textContent   = todosIds || "(vacíos)";
+           // document.getElementById("debugIds").textContent   = todosIds || "(vacíos)";
           }
           return;
         }
@@ -270,7 +270,7 @@ Parece que aún no tienes ninguna obra publicada o ninguna coincide  on tu id.<b
 
       } catch (e) {
         console.error(e);
-        container.innerHTML = `<p style="color:var(--accent3);text-align:center;">Vaya, se han perdido tus pergaminos.</p>`;
+        container.innerHTML = `<p style="color:var(--accent);text-align:center;">Error al cargar tus obras.</p>`;
       }
     }
 
