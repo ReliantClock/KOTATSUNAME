@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kotatsuname-v1'; // Incrementa la versión al hacer cambios grandes
+const CACHE_NAME = 'kotatsuname-v2'; // Incrementa la versión al hacer cambios grandes
 const OFFLINE_URL = '/offline.html';
 
 const ASSETS = [
