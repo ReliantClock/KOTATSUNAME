@@ -2,21 +2,15 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal de Autores | Kotatsu</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="buscador.css">
   <style>
-    :root {
-      --bg: #0a0a0f; --surface: #12121c; --border: #2a2a3e;
-      --accent: #e63e6d; --accent3: #06b6d4; --text: #e8e8f0;
-      --text-muted: #6b6b8a; --glow: rgba(230,62,109,0.3);
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; display: flex; min-height: 100vh; }
 
-    /* ── Lado informativo ── */
     .info-side {
       flex: 1; padding: 4rem; display: flex; flex-direction: column;
       justify-content: center; border-right: 1px solid var(--border);
@@ -25,41 +19,54 @@
     .info-side h1 { font-family: 'Cinzel Decorative'; font-size: 5rem; color: var(--accent); line-height: 1; }
     .info-side p  { color: var(--accent3); letter-spacing: 8px; font-weight: 700; margin-top: 10px; }
 
-    /* ── Lado formulario ── */
     .auth-side { width: 480px; display: flex; align-items: center; justify-content: center; padding: 20px; }
     .auth-card {
       width: 100%; max-width: 400px; background: var(--surface);
       padding: 2.5rem 2rem; border-radius: 24px; border: 1px solid var(--border);
       box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     }
+
     .mobile-logo { display: none; text-align: center; margin-bottom: 1.5rem; }
     .mobile-logo h1 { font-family: 'Cinzel Decorative'; font-size: 2.2rem; color: var(--accent); }
     .mobile-logo p  { color: var(--accent3); letter-spacing: 3px; font-size: 0.7rem; font-weight: 700; }
 
-    /* ── Inputs ── */
+    .card-title { font-family: 'Cinzel Decorative'; text-align: center; font-size: 1.1rem; color: #fff; margin-bottom: 2rem; }
+
+    .btn-google {
+      width: 100%; padding: 14px; border-radius: 50px;
+      background: #fff; color: #1a1a1a; border: none;
+      font-family: 'Rajdhani'; font-weight: 700; font-size: 1rem;
+      cursor: pointer; transition: 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .btn-google:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+    .btn-google img  { width: 20px; height: 20px; }
+    .btn-google:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; color: var(--text-muted); font-size: 0.8rem; }
+    .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
     .input-group { margin-bottom: 1.2rem; }
     label { display: block; margin-bottom: 8px; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
     .input-wrapper { position: relative; }
-    .input-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; transition: 0.3s; }
+    .input-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
     input[type="text"], input[type="email"], input[type="password"] {
       width: 100%; padding: 13px 14px 13px 42px;
       background: rgba(26,26,40,0.6); border: 1px solid var(--border);
-      border-radius: 12px; color: #fff;
-      font-family: 'Rajdhani'; font-size: 1rem; transition: 0.3s; outline: none;
+      border-radius: 12px; color: #fff; font-family: 'Rajdhani'; font-size: 1rem;
+      transition: 0.3s; outline: none;
     }
-    input:focus { border-color: var(--accent3); background: #1a1a28; box-shadow: 0 0 12px rgba(6,182,212,0.1); }
-
-    #group-email { display: none; }
+    input:focus { border-color: var(--accent3); background: #1a1a28; }
 
     .error-msg { min-height: 1.3rem; font-size: 0.85rem; font-weight: 600; text-align: center; margin-bottom: 1rem; color: var(--accent); }
 
     .btn-submit {
-      width: 100%; padding: 15px; margin-top: 8px;
-      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent), #7c3aed);
       border: none; border-radius: 50px; color: #fff; font-weight: 700;
       font-family: 'Rajdhani'; font-size: 1rem; text-transform: uppercase;
       letter-spacing: 1px; cursor: pointer; transition: 0.3s;
-      box-shadow: 0 8px 25px var(--glow);
+      box-shadow: 0 8px 25px rgba(230,62,109,0.3);
       display: flex; align-items: center; justify-content: center; gap: 10px;
     }
     .btn-submit:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
@@ -68,21 +75,34 @@
     .spinner { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .toggle { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 0.9rem; }
+    .toggle { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.9rem; }
     .toggle span { color: var(--accent3); cursor: pointer; font-weight: 700; border-bottom: 1px dashed var(--accent3); margin-left: 5px; }
+
+    .loading-overlay {
+      position: fixed; inset: 0; background: rgba(10,10,15,0.92);
+      display: none; align-items: center; justify-content: center;
+      z-index: 999; flex-direction: column; gap: 16px;
+    }
+    .loading-overlay.show { display: flex; }
+    .loading-overlay p { color: var(--accent3); font-weight: 700; letter-spacing: 2px; font-size: 0.9rem; }
+    .big-spinner { width: 40px; height: 40px; border: 4px solid rgba(230,62,109,0.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+    #group-email { display: none; }
 
     @media (max-width: 860px) {
       .auth-side { width: 100%; }
       .info-side  { display: none; }
       .mobile-logo { display: block; }
     }
-    @media (max-width: 480px) {
-      .auth-card { background: transparent; border: none; box-shadow: none; padding: 1.5rem 1rem; }
-      body { background: var(--surface); }
-    }
   </style>
 </head>
 <body>
+  <div class="bg-grid"></div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="big-spinner"></div>
+    <p id="loadingMsg">Verificando cuenta...</p>
+  </div>
 
   <section class="info-side">
     <h1>KOTATSU</h1>
@@ -92,11 +112,18 @@
   <section class="auth-side">
     <div class="auth-card">
       <div class="mobile-logo">
-        <h1>KOTATSUNAME</h1>
+        <h1>KOTATSU</h1>
         <p>PORTAL DE AUTORES</p>
       </div>
 
-      <h2 id="formTitle" style="font-family:'Cinzel Decorative'; text-align:center; margin-bottom:2rem; font-size:1.4rem; color:#fff;">Acceso</h2>
+      <h2 class="card-title" id="formTitle">Acceso</h2>
+
+      <button class="btn-google" id="btnGoogle" onclick="loginConGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        Continuar con Google
+      </button>
+
+      <div class="divider">o con usuario y contraseña</div>
 
       <div class="input-group">
         <label>Nombre de Autor</label>
@@ -124,7 +151,7 @@
 
       <div id="errMsg" class="error-msg"></div>
 
-      <button class="btn-submit" id="btnSubmit" onclick="enviar()">
+      <button class="btn-submit" id="btnSubmit" onclick="enviarClasico()">
         <div class="spinner" id="spinner"></div>
         <span id="btnTxt">Conectar</span>
       </button>
@@ -135,77 +162,212 @@
     </div>
   </section>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZAS5mnuxQ_JlVk_ftcmIA7CUqvfgJqJt9a5QO9OmmCkDo0dW-NXkEdxA37aFtvXmc/exec";
-    let esRegistro = false;
+  <script type="module">
+    import { initializeApp }                                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // Si ya está logueado, ir directo al panel
-    if (localStorage.getItem("ktt_id")) window.location.href = "panel_autor.html";
+    var firebaseConfig = {
+      apiKey           : "AIzaSyB9ggk8-mx9fA9nIc15YHFPHpjwOqS6V40",
+      authDomain       : "kotatsuname.vercel.app",
+      projectId        : "kotatsuname-e33cd",
+      storageBucket    : "kotatsuname-e33cd.firebasestorage.app",
+      messagingSenderId: "963896724012",
+      appId            : "1:963896724012:web:0bd7fcce38c5aa5d535f89"
+    };
 
-    function cambiarModo() {
+    var app      = initializeApp(firebaseConfig);
+    var auth     = getAuth(app);
+    var provider = new GoogleAuthProvider();
+
+var SCRIPT1_URL = "https://script.google.com/macros/s/AKfycbzNQfn1d_TYeGmI9JgwixG6yoy4tblXxjUJ4ekWJWHNniqaXIgsN1BcvK_XXYExdc17/exec";
+    var SCRIPT2_URL = "https://script.google.com/macros/s/AKfycbyBQSJ0LaCBCEzdIYZkDOaVU8qTP2uivgHGZEmjI10Ew8TQ_75XtnYbJfnCMF_f6i-Bpw/exec";
+
+
+    var DESTINO = {
+      autor     : "panel_autor.html",
+      moderador : "sysctl_lv1.html",
+      admin     : "sysctl_lv2.html",
+      dueno     : "sysctl_lv0.html",
+      suspendido: "sysctl_suspend.html"
+    };
+
+    function showLoading(msg) {
+      document.getElementById("loadingOverlay").classList.add("show");
+      document.getElementById("loadingMsg").textContent = msg || "Verificando...";
+    }
+
+    function hideLoading() {
+      document.getElementById("loadingOverlay").classList.remove("show");
+    }
+
+    function setError(msg) {
+      document.getElementById("errMsg").textContent = msg || "";
+    }
+
+    // ── Procesar resultado tras volver del redirect de Google ──
+    async function procesarUsuarioGoogle(gUser) {
+      var email  = gUser.email;
+      var nombre = gUser.displayName || email.split("@")[0];
+      var foto   = gUser.photoURL    || "";
+
+      showLoading("Buscando tu cuenta...");
+
+      try {
+        var res2  = await fetch(SCRIPT2_URL, {
+          method : "POST",
+          headers: { "Content-Type": "text/plain" },
+          body   : JSON.stringify({ action: "loginGoogle", email: email })
+        });
+        var data2 = await res2.json();
+
+        if (data2.status === "success") {
+          var rol = data2.rol;
+          if (rol === "suspendido") {
+            localStorage.setItem("ktt_suspend_motivo", data2.motivo || "");
+            window.location.href = DESTINO.suspendido;
+            return;
+          }
+          localStorage.setItem("ktt_id",    data2.id);
+          localStorage.setItem("ktt_user",  data2.nombre || nombre);
+          localStorage.setItem("ktt_foto",  data2.foto   || foto);
+          localStorage.setItem("ktt_rol",   rol);
+          localStorage.setItem("ktt_email", email);
+          showLoading("Acceso concedido. Redirigiendo...");
+          window.location.href = DESTINO[rol] || DESTINO.autor;
+
+        } else if (data2.status === "not_found") {
+          showLoading("Creando tu cuenta...");
+          var r1 = await fetch(SCRIPT1_URL, {
+            method : "POST",
+            headers: { "Content-Type": "text/plain" },
+            body   : JSON.stringify({ action: "registroGoogle", email: email, nombre: nombre, foto: foto })
+          });
+          var d1 = await r1.json();
+
+          if (d1.status !== "success") {
+            setError(d1.message || "Error al crear la cuenta.");
+            hideLoading();
+            return;
+          }
+
+          await fetch(SCRIPT2_URL, {
+            method : "POST",
+            headers: { "Content-Type": "text/plain" },
+            body   : JSON.stringify({ action: "registroGoogle", email: email, nombre: nombre, rol: "autor", id: d1.idAutor, foto: foto })
+          });
+
+          localStorage.setItem("ktt_id",    d1.idAutor);
+          localStorage.setItem("ktt_user",  nombre);
+          localStorage.setItem("ktt_foto",  foto);
+          localStorage.setItem("ktt_rol",   "autor");
+          localStorage.setItem("ktt_email", email);
+          showLoading("Cuenta creada. Redirigiendo...");
+          window.location.href = DESTINO.autor;
+
+        } else {
+          setError(data2.message || "Error al verificar cuenta.");
+          hideLoading();
+        }
+      } catch(e) {
+        setError("Error de conexion. Intenta de nuevo.");
+        hideLoading();
+      }
+    }
+
+    // ── Al cargar la página, verificar si venimos de un redirect de Google ──
+    showLoading("Verificando sesion...");
+    getRedirectResult(auth).then(function(result) {
+      hideLoading();
+      if (result && result.user) {
+        procesarUsuarioGoogle(result.user);
+      }
+    }).catch(function(err) {
+      hideLoading();
+      console.error(err);
+    });
+
+    // ── Botón Google — inicia el redirect ──
+    window.loginConGoogle = function() {
+      document.getElementById("btnGoogle").disabled = true;
+      showLoading("Redirigiendo a Google...");
+      signInWithRedirect(auth, provider);
+    };
+
+    var esRegistro = false;
+
+    window.cambiarModo = function() {
       esRegistro = !esRegistro;
-      document.getElementById("formTitle").textContent  = esRegistro ? "Registro" : "Acceso";
-      document.getElementById("btnTxt").textContent     = esRegistro ? "Crear cuenta" : "Conectar";
+      document.getElementById("formTitle").textContent     = esRegistro ? "Registro" : "Acceso";
+      document.getElementById("btnTxt").textContent        = esRegistro ? "Crear cuenta" : "Conectar";
       document.getElementById("group-email").style.display = esRegistro ? "block" : "none";
-      document.getElementById("toggleMsg").innerHTML    = esRegistro
-        ? '¿Ya tienes cuenta? <span onclick="cambiarModo()">Inicia sesión</span>'
-        : '¿No tienes cuenta? <span onclick="cambiarModo()">Regístrate</span>';
+      document.getElementById("toggleMsg").innerHTML       = esRegistro
+        ? "Ya tienes cuenta? <span onclick=\"cambiarModo()\">Inicia sesion</span>"
+        : "No tienes cuenta? <span onclick=\"cambiarModo()\">Registrate</span>";
       setError("");
-    }
+    };
 
-    function setError(msg, color = "var(--accent)") {
-      const el = document.getElementById("errMsg");
-      el.style.color = color;
-      el.textContent = msg;
-    }
-
-    function setLoading(on) {
-      document.getElementById("btnSubmit").disabled = on;
-      document.getElementById("spinner").style.display = on ? "block" : "none";
-      document.getElementById("btnTxt").style.display  = on ? "none"  : "block";
-    }
-
-    async function enviar() {
-      const u = document.getElementById("user").value.trim();
-      const p = document.getElementById("pass").value.trim();
-      const e = document.getElementById("email").value.trim();
+    window.enviarClasico = async function() {
+      var u   = document.getElementById("user").value.trim();
+      var p   = document.getElementById("pass").value.trim();
+      var e   = document.getElementById("email").value.trim();
+      var btn = document.getElementById("btnSubmit");
 
       if (!u || !p) { setError("Completa todos los campos."); return; }
       if (esRegistro && !e) { setError("El correo es obligatorio para registrarte."); return; }
 
-      setLoading(true);
+      btn.disabled = true;
+      document.getElementById("spinner").style.display = "block";
+      document.getElementById("btnTxt").style.display  = "none";
       setError("");
 
       try {
-        const res  = await fetch(SCRIPT_URL, {
+        var res  = await fetch(SCRIPT1_URL, {
           method : "POST",
           headers: { "Content-Type": "text/plain" },
-          body   : JSON.stringify({ action: esRegistro ? "registro" : "login", user: u, pass: p, email: e }),
+          body   : JSON.stringify({ action: esRegistro ? "registro" : "login", user: u, pass: p, email: e })
         });
-        const data = await res.json();
+        var data = await res.json();
 
         if (data.status === "success") {
           if (esRegistro) {
-            setError("¡Registro exitoso! Ahora inicia sesión.", "var(--accent3)");
-            setTimeout(() => { cambiarModo(); document.getElementById("pass").value = ""; }, 1500);
+            document.getElementById("errMsg").style.color = "var(--accent3)";
+            setError("Registro exitoso. Ahora inicia sesion.");
+            setTimeout(function() {
+              cambiarModo();
+              document.getElementById("pass").value = "";
+              document.getElementById("errMsg").style.color = "var(--accent)";
+            }, 1500);
           } else {
+            if (data.suspendido) {
+              localStorage.setItem("ktt_suspend_motivo", data.motivo || "");
+              window.location.href = DESTINO.suspendido;
+              return;
+            }
             localStorage.setItem("ktt_id",   data.idAutor);
             localStorage.setItem("ktt_user", data.nombre);
             localStorage.setItem("ktt_foto", data.foto || "");
-            window.location.href = "panel_autor.html";
+            localStorage.setItem("ktt_rol",  "autor");
+            window.location.href = DESTINO.autor;
           }
         } else {
           setError(data.message || "Credenciales incorrectas.");
         }
       } catch (err) {
-        setError("Error de conexión. Intenta de nuevo.");
+        setError("Error de conexion. Intenta de nuevo.");
       } finally {
-        setLoading(false);
+        btn.disabled = false;
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("btnTxt").style.display  = "block";
       }
-    }
+    };
 
-    // Enviar con Enter
-    document.addEventListener("keydown", e => { if (e.key === "Enter") enviar(); });
+    document.addEventListener("keydown", function(e) { if (e.key === "Enter") enviarClasico(); });
+
+    var rolGuardado = localStorage.getItem("ktt_rol");
+    var idGuardado  = localStorage.getItem("ktt_id");
+    if (idGuardado && rolGuardado && DESTINO[rolGuardado]) {
+      window.location.href = DESTINO[rolGuardado];
+    }
   </script>
 </body>
 </html>
