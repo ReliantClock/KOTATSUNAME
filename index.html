@@ -8,17 +8,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
     
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0f">
+
 <meta name="mobile-web-app-capable" content="yes">
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Kotatsuname">
-<link rel="apple-touch-icon" href="ICONO_192.png">
-
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0a0a0f">
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('PWA Kotatsu: Service Worker registrado'))
+        .catch(err => console.log('PWA Kotatsu: Error al registrar Service Worker', err));
+    });
+  }
 </script>
 
   <style>
@@ -63,15 +66,7 @@
   <div class="bg-glow"></div>
 
   <div class="wrapper">
-    
-    <a href="registrarse.html" class="sidebar-btn">👤</a>
-    
-    <div id="install-container" style="display: none; padding: 15px; background: #1a1a24; border-radius: 8px; margin: 10px; text-align: center; border: 1px solid #333;">
-  <p style="color: white; margin-bottom: 10px;">¡Disfruta de Kotatsuname como una App!</p>
-  <button id="btn-install" style="background: #e91e63; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-    Instalar Ahora
-  </button>
-</div>
+                  <a href="registrarse.html" class="sidebar-btn">👤</a>
 
     <header class="header">
       <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
@@ -186,56 +181,6 @@
       });
     }
   </script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker registrado con éxito', reg))
-        .catch(err => console.error('Error al registrar el Service Worker', err));
-    });
-  }
-</script>
-
-
-
-<script>
-  let deferredPrompt;
-  const installContainer = document.getElementById('install-container');
-  const btnInstall = document.getElementById('btn-install');
-
-  // 1. Escuchar el evento de instalación de Chrome/Brave/Edge
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Evita que el navegador muestre su propio banner automático
-    e.preventDefault();
-    // Guarda el evento para usarlo luego
-    deferredPrompt = e;
-    // Muestra tu botón personalizado
-    installContainer.style.display = 'block';
-  });
-
-  // 2. Lógica al hacer clic en tu botón
-  btnInstall.addEventListener('click', async () => {
-    if (deferredPrompt) {
-      // Muestra el prompt oficial
-      deferredPrompt.prompt();
-      // Espera la respuesta del usuario
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`Usuario eligió: ${outcome}`);
-      // Limpiamos la variable
-      deferredPrompt = null;
-      // Ocultamos el contenedor
-      installContainer.style.display = 'none';
-    }
-  });
-
-  // 3. Ocultar si ya está instalada
-  window.addEventListener('appinstalled', () => {
-    installContainer.style.display = 'none';
-    console.log('PWA instalada con éxito');
-  });
-</script>
-
-
 
   <script type="module" src="escritos_buscador.js"></script>
 
