@@ -163,12 +163,8 @@
 
     <!-- Solo se muestra si hay obras en el sheet pero ninguna coincide con el autor -->
     <div class="debug-box" id="debugBox">
-      Hay obras en el sistema pero ninguna tiene tu ID de autor.<br>
-      Tu ID: <code id="debugMiId"></code><br>
-      IDs encontrados en las obras: <code id="debugIds"></code><br>
-      <br>
-      Si acabas de crear tu cuenta, asegúrate de que el Sheet tenga la columna <code>id_autor</code>
-      con exactamente ese nombre y que tu obra llegó con el ID correcto.
+Parece que aún no tienes ninguna obra publicada o ninguna coincide  on tu id.<br>
+      Tu ID: <code id="debugMiId"></code>
     </div>
 
   </main>
@@ -274,7 +270,7 @@
 
       } catch (e) {
         console.error(e);
-        container.innerHTML = `<p style="color:var(--accent);text-align:center;">Error al cargar tus obras.</p>`;
+        container.innerHTML = `<p style="color:var(--accent3);text-align:center;">Vaya, se han perdido tus pergaminos.</p>`;
       }
     }
 
