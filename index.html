@@ -8,20 +8,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
     
-  <meta name="theme-color" content="#0a0a0f">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 
-<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kotatsuname">
+<link rel="apple-touch-icon" href="ICONO_192.png">
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('PWA Kotatsu: Service Worker registrado'))
-        .catch(err => console.log('PWA Kotatsu: Error al registrar Service Worker', err));
-    });
-  }
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0a0a0f">
+
 </script>
 
   <style>
@@ -181,6 +178,16 @@
       });
     }
   </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registrado con éxito', reg))
+        .catch(err => console.error('Error al registrar el Service Worker', err));
+    });
+  }
+</script>
+
 
   <script type="module" src="escritos_buscador.js"></script>
 
