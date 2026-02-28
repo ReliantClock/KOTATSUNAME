@@ -81,7 +81,7 @@
 
   <div class="wrapper">
     <nav style="padding: 20px 0 28px; display:flex; justify-content:space-between; align-items:center;">
-      <a href="escritos.html" class="nav-btn">Volver</a>
+      <a href="index.html" class="nav-btn">Volver</a>
       <button id="btnShareBook" class="nav-btn btn-share-book">Compartir</button>
     </nav>
 
@@ -133,7 +133,7 @@
     }
 
     async function cargarLibro() {
-      if (!libroId) { window.location.href = "escritos.html"; return; }
+      if (!libroId) { window.location.href = "index.html"; return; }
 
       const libros = await loadEscritos();
       const libro  = libros.find(l => l.id == libroId);
