@@ -14,6 +14,15 @@
 
 <link rel="manifest" href="/manifest.json">
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('PWA Kotatsu: Service Worker registrado'))
+        .catch(err => console.log('PWA Kotatsu: Error al registrar Service Worker', err));
+    });
+  }
+</script>
 
   <style>
     .nav-btn {
@@ -57,12 +66,9 @@
   <div class="bg-glow"></div>
 
   <div class="wrapper">
-    <div id="install-container" style="display: none; padding: 15px; background: rgba(26, 26, 36, 0.9); border: 1px solid var(--accent); border-radius: 8px; margin: 15px auto; max-width: 400px; text-align: center;">
-      <p style="color: #fff; font-family: 'Rajdhani', sans-serif; margin-bottom: 12px;">Disfruta de la Biblioteca Kotatsu como una App</p>
-      <button id="btn-install" class="nav-btn" style="background: var(--accent); width: 100%;">INSTALAR AHORA</button>
-    </div>
-    
-    <a href="registrarse.html" class="sidebar-btn">👤</a>
+                  <a href="registrarse.html" class="sidebar-btn">👤</a><button id="installBtn" class="nav-btn" style="display: none; margin-left: 10px;">Instalar App
+</button>
+
 
     <header class="header">
       <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
@@ -177,35 +183,46 @@
       });
     }
   </script>
-  
-
-
-    <script>
-    let deferredPrompt;
-    const installContainer = document.getElementById('install-container');
-    const btnInstall = document.getElementById('btn-install');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installContainer.style.display = 'block';
-    });
-
-    btnInstall.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') installContainer.style.display = 'none';
-        deferredPrompt = null;
-      }
-    });
-
-    window.addEventListener('appinstalled', () => {
-      installContainer.style.display = 'none';
-    });
-  </script>
 
   <script type="module" src="escritos_buscador.js"></script>
+  
+  
+  <script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('installBtn');
+
+  // 1. Escuchar el evento de instalación del navegador
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Evitar que Chrome muestre su propio aviso automático
+    e.preventDefault();
+    // Guardar el evento para dispararlo luego
+    deferredPrompt = e;
+    // Mostrar nuestro botón personalizado
+    installBtn.style.display = 'inline-block';
+  });
+
+  // 2. Lógica al hacer clic en el botón
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      // Mostrar el prompt nativo
+      deferredPrompt.prompt();
+      // Esperar la respuesta del usuario
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`Usuario respondió a la instalación: ${outcome}`);
+      // Limpiar la variable, ya no se puede usar de nuevo
+      deferredPrompt = null;
+      // Ocultar el botón después de la acción
+      installBtn.style.display = 'none';
+    }
+  });
+
+  // 3. Ocultar el botón si la app ya se instaló con éxito
+  window.addEventListener('appinstalled', (evt) => {
+    console.log('KOTATSUNAME: Instalada con éxito');
+    installBtn.style.display = 'none';
+  });
+</script>
+
 
 </body>
 </html>
