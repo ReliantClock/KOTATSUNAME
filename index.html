@@ -14,15 +14,6 @@
 
 <link rel="manifest" href="/manifest.json">
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('PWA Kotatsu: Service Worker registrado'))
-        .catch(err => console.log('PWA Kotatsu: Error al registrar Service Worker', err));
-    });
-  }
-</script>
 
   <style>
     .nav-btn {
@@ -66,7 +57,12 @@
   <div class="bg-glow"></div>
 
   <div class="wrapper">
-                  <a href="registrarse.html" class="sidebar-btn">👤</a>
+    <div id="install-container" style="display: none; padding: 15px; background: rgba(26, 26, 36, 0.9); border: 1px solid var(--accent); border-radius: 8px; margin: 15px auto; max-width: 400px; text-align: center;">
+      <p style="color: #fff; font-family: 'Rajdhani', sans-serif; margin-bottom: 12px;">Disfruta de la Biblioteca Kotatsu como una App</p>
+      <button id="btn-install" class="nav-btn" style="background: var(--accent); width: 100%;">INSTALAR AHORA</button>
+    </div>
+    
+    <a href="registrarse.html" class="sidebar-btn">👤</a>
 
     <header class="header">
       <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
@@ -180,6 +176,33 @@
         toggle.textContent = collapsed ? "Ver todos ▾" : "Ver menos ▴";
       });
     }
+  </script>
+  
+
+
+    <script>
+    let deferredPrompt;
+    const installContainer = document.getElementById('install-container');
+    const btnInstall = document.getElementById('btn-install');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installContainer.style.display = 'block';
+    });
+
+    btnInstall.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') installContainer.style.display = 'none';
+        deferredPrompt = null;
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installContainer.style.display = 'none';
+    });
   </script>
 
   <script type="module" src="escritos_buscador.js"></script>
