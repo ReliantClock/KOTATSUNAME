@@ -2,7 +2,7 @@
   "name": "KOTATSUNAME",
   "short_name": "Kotatsuname",
   "description": "Portal de Autores y Catálogo de Libros",
-  "start_url": "/escritos.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0a0f",
