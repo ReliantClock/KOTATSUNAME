@@ -1,9 +1,9 @@
-const CACHE_NAME = 'kotatsuname-v2'; // Incrementa la versión al hacer cambios grandes
+const CACHE_NAME = 'kotatsuname-v2'; // Actualizado a v2
 const OFFLINE_URL = '/offline.html';
 
 const ASSETS = [
   '/',
-  '/index.html',
+  '/index.html', // Ruta actualizada
   '/escritos_capitulos.html',
   '/libro_capitulo.html',
   '/registrarse.html',
@@ -27,43 +27,52 @@ self.addEventListener('install', (evt) => {
       return cache.addAll(ASSETS);
     })
   );
+  // Fuerza al Service Worker a tomar el control inmediatamente
   self.skipWaiting(); 
 });
 
-// 2. Activación: Limpia cachés antiguos de versiones previas
+// 2. Activación: Limpieza y Reclamación de Clientes
 self.addEventListener('activate', (evt) => {
   evt.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      );
-    })
+    Promise.all([
+      // Limpia cachés antiguos
+      caches.keys().then((keys) => {
+        return Promise.all(
+          keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        );
+      }),
+      // Permite que el SW controle las pestañas abiertas de inmediato
+      self.clients.claim()
+    ])
   );
-  self.clients.claim();
 });
 
-// 3. Estrategia de Carga Inteligente
+// 3. Estrategia de Carga Inteligente (Network First para Navegación)
 self.addEventListener('fetch', (evt) => {
-  // Ignorar peticiones de otros dominios (como APIs externas si las tuvieras)
   if (!evt.request.url.startsWith(self.location.origin)) return;
 
   if (evt.request.mode === 'navigate') {
-    // Para las páginas HTML: Intentar red, si falla, mostrar Offline
     evt.respondWith(
-      fetch(evt.request).catch(() => caches.match(OFFLINE_URL))
+      fetch(evt.request).catch(() => {
+        // Si falla la red, intenta buscar la página exacta en caché o el modo offline
+        return caches.match(evt.request).then((response) => {
+          return response || caches.match(OFFLINE_URL);
+        });
+      })
     );
   } else {
-    // Para Assets (CSS, JS, Imágenes): Stale-While-Revalidate
+    // Para Assets: Stale-While-Revalidate
     evt.respondWith(
       caches.match(evt.request).then((cachedResponse) => {
         const fetchPromise = fetch(evt.request).then((networkResponse) => {
-          // Actualizamos el caché con la nueva versión encontrada
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(evt.request, networkResponse.clone());
-          });
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(evt.request, responseToCache);
+            });
+          }
           return networkResponse;
         });
-        // Devuelve el caché si existe, o la red si no
         return cachedResponse || fetchPromise;
       })
     );
