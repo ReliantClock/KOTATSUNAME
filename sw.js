@@ -1,5 +1,5 @@
-const CACHE_NAME = 'kotatsuname-v1';
-const OFFLINE_URL = '/offline.html'; // Definimos la ruta offline
+const CACHE_NAME = 'kotatsuname-v1'; // Incrementa la versión al hacer cambios grandes
+const OFFLINE_URL = '/offline.html';
 
 const ASSETS = [
   '/',
@@ -16,33 +16,55 @@ const ASSETS = [
   '/buscador.css',
   '/ICONO_192.png',
   '/ICONO_512.png',
-  OFFLINE_URL // ¡Simplemente usa la variable aquí!
+  OFFLINE_URL
 ];
 
+// 1. Instalación: Cachea todo lo esencial
 self.addEventListener('install', (evt) => {
   evt.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // Intenta cachear todos los archivos definidos
+      console.log('Cacheando archivos críticos...');
       return cache.addAll(ASSETS);
     })
   );
+  self.skipWaiting(); 
 });
 
-// Lógica mejorada para detectar fallos de red
+// 2. Activación: Limpia cachés antiguos de versiones previas
+self.addEventListener('activate', (evt) => {
+  evt.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      );
+    })
+  );
+  self.clients.claim();
+});
+
+// 3. Estrategia de Carga Inteligente
 self.addEventListener('fetch', (evt) => {
-  // Solo interceptamos navegaciones de páginas (HTML)
+  // Ignorar peticiones de otros dominios (como APIs externas si las tuvieras)
+  if (!evt.request.url.startsWith(self.location.origin)) return;
+
   if (evt.request.mode === 'navigate') {
+    // Para las páginas HTML: Intentar red, si falla, mostrar Offline
     evt.respondWith(
-      fetch(evt.request).catch(() => {
-        // Si el fetch falla (no hay internet), devolvemos la página offline
-        return caches.match(OFFLINE_URL);
-      })
+      fetch(evt.request).catch(() => caches.match(OFFLINE_URL))
     );
   } else {
-    // Para imágenes/CSS/JS usamos la estrategia normal
+    // Para Assets (CSS, JS, Imágenes): Stale-While-Revalidate
     evt.respondWith(
-      caches.match(evt.request).then((response) => {
-        return response || fetch(evt.request);
+      caches.match(evt.request).then((cachedResponse) => {
+        const fetchPromise = fetch(evt.request).then((networkResponse) => {
+          // Actualizamos el caché con la nueva versión encontrada
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(evt.request, networkResponse.clone());
+          });
+          return networkResponse;
+        });
+        // Devuelve el caché si existe, o la red si no
+        return cachedResponse || fetchPromise;
       })
     );
   }
