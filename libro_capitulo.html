@@ -155,11 +155,11 @@
     }
 
     async function cargarCapitulo() {
-      if (!libroId) { window.location.href = "escritos.html"; return; }
+      if (!libroId) { window.location.href = "index.html"; return; }
 
       const libros = await loadEscritos();
       const libro  = libros.find(l => l.id == libroId);
-      if (!libro)  { window.location.href = "escritos.html"; return; }
+      if (!libro)  { window.location.href = "index.html"; return; }
 
       const caps = libro.caps || [];
 
