@@ -8,122 +8,161 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="buscador.css">
   <style>
-    body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; }
 
     .top-nav {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 24px; border-bottom: 1px solid var(--border);
-      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
-      position: sticky; top: 0; z-index: 50;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:14px 24px; border-bottom:1px solid var(--border);
+      background:rgba(10,10,15,0.85); backdrop-filter:blur(12px);
+      position:sticky; top:0; z-index:50;
     }
-    .top-nav .brand  { font-family: 'Cinzel Decorative'; color: var(--accent); font-size: 1.3rem; }
-    .top-nav .logout { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; transition: color 0.2s; }
-    .top-nav .logout:hover { color: var(--accent); }
+    .top-nav .brand  { font-family:'Cinzel Decorative'; color:var(--accent); font-size:1.3rem; }
+    .top-nav .nav-links { display:flex; gap:12px; align-items:center; }
+    .top-nav .btn-home {
+      text-decoration:none; background:transparent; padding:6px 14px;
+      border-radius:6px; color:var(--text-muted); font-family:'Rajdhani';
+      font-size:0.78rem; font-weight:600; letter-spacing:0.08em;
+      border:1px solid var(--border); transition:0.2s;
+    }
+    .top-nav .btn-home:hover { border-color:var(--accent3); color:var(--accent3); }
+    .top-nav .logout {
+      background:none; border:none; color:var(--text-muted);
+      cursor:pointer; font-size:1.1rem; transition:color 0.2s;
+    }
+    .top-nav .logout:hover { color:var(--accent); }
 
-    .container { max-width: 860px; margin: 0 auto; padding: 28px 20px 80px; }
+    .container { max-width:860px; margin:0 auto; padding:28px 20px 80px; }
 
+    /* Perfil */
     .profile-card {
-      display: flex; align-items: center; gap: 24px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; padding: 24px 28px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3); flex-wrap: wrap;
+      display:flex; align-items:center; gap:24px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:20px; padding:24px 28px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.3); flex-wrap:wrap;
     }
-    .avatar-wrap { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+    .avatar-wrap { position:relative; width:100px; height:100px; flex-shrink:0; }
     .avatar-wrap img {
-      width: 100%; height: 100%; border-radius: 50%;
-      object-fit: cover; border: 3px solid var(--accent3);
-      background: #1a1a28; display: block;
+      width:100%; height:100%; border-radius:50%;
+      object-fit:cover; border:3px solid var(--accent3);
+      background:#1a1a28; display:block;
     }
     .avatar-btn {
-      position: absolute; bottom: 2px; right: 2px;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--accent); border: 2px solid var(--surface);
-      color: #fff; font-size: 0.7rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: 0.2s;
+      position:absolute; bottom:2px; right:2px;
+      width:28px; height:28px; border-radius:50%;
+      background:var(--accent); border:2px solid var(--surface);
+      color:#fff; font-size:0.7rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; transition:0.2s;
     }
-    .avatar-btn:hover { transform: scale(1.1); }
+    .avatar-btn:hover { transform:scale(1.1); }
 
-    .profile-info .role { color: var(--accent3); font-size: 0.65rem; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; }
-    .profile-info h2   { color: #fff; margin: 4px 0 0; font-size: 1.4rem; }
-    .profile-info .pid { color: var(--text-muted); font-size: 0.7rem; margin-top: 4px; font-family: monospace; }
+    .profile-info .role  { color:var(--accent3); font-size:0.65rem; letter-spacing:3px; font-weight:700; text-transform:uppercase; }
+    .profile-info h2     { color:#fff; margin:4px 0 0; font-size:1.4rem; }
+    .profile-info .pid   { color:var(--text-muted); font-size:0.7rem; margin-top:4px; font-family:monospace; }
 
+    /* Drawer de foto */
     .photo-drawer {
-      background: #12121e; border: 1px solid var(--border); border-top: none;
-      border-radius: 0 0 20px 20px; max-height: 0; overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.3s, opacity 0.3s; opacity: 0;
+      background:#12121e; border:1px solid var(--border); border-top:none;
+      border-radius:0 0 20px 20px; max-height:0; overflow:hidden;
+      transition:max-height 0.4s ease,padding 0.3s,opacity 0.3s; opacity:0;
     }
-    .photo-drawer.open { max-height: 160px; padding: 20px 24px; opacity: 1; }
-    .photo-drawer label { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 10px; }
-    .photo-row { display: flex; gap: 10px; }
+    .photo-drawer.open { max-height:160px; padding:20px 24px; opacity:1; }
+    .photo-drawer label {
+      font-size:0.7rem; color:var(--text-muted); font-weight:700;
+      letter-spacing:2px; text-transform:uppercase; display:block; margin-bottom:10px;
+    }
+    .photo-row { display:flex; gap:10px; }
     .photo-row input {
-      flex: 1; background: #0a0a0f; border: 1px solid var(--border);
-      padding: 11px 14px; border-radius: 10px; color: #fff; outline: none;
-      font-family: 'Rajdhani'; font-size: 0.95rem; transition: 0.2s;
+      flex:1; background:#0a0a0f; border:1px solid var(--border);
+      padding:11px 14px; border-radius:10px; color:#fff; outline:none;
+      font-family:'Rajdhani'; font-size:0.95rem; transition:0.2s;
     }
-    .photo-row input:focus { border-color: var(--accent3); }
+    .photo-row input:focus { border-color:var(--accent3); }
     .photo-row button {
-      background: var(--accent3); color: #000; border: none;
-      padding: 0 20px; border-radius: 10px; font-weight: 700;
-      font-family: 'Rajdhani'; cursor: pointer; font-size: 0.9rem;
+      background:var(--accent3); color:#000; border:none;
+      padding:0 20px; border-radius:10px; font-weight:700;
+      font-family:'Rajdhani'; cursor:pointer; font-size:0.9rem;
     }
 
+    /* Obras */
     .obras-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin: 28px 0 18px; flex-wrap: wrap; gap: 12px;
+      display:flex; justify-content:space-between; align-items:center;
+      margin:28px 0 18px; flex-wrap:wrap; gap:12px;
     }
-    .obras-header h3 { font-family: 'Cinzel Decorative'; font-size: 0.85rem; letter-spacing: 1px; color: var(--text-muted); }
+    .obras-header h3 { font-family:'Cinzel Decorative'; font-size:0.85rem; letter-spacing:1px; color:var(--text-muted); }
     .btn-nueva {
-      background: var(--accent); color: #fff; text-decoration: none;
-      padding: 10px 22px; border-radius: 50px; font-weight: 700;
-      font-size: 0.75rem; box-shadow: 0 4px 15px rgba(230,62,109,0.3); transition: 0.2s;
+      background:var(--accent); color:#fff; text-decoration:none;
+      padding:10px 22px; border-radius:50px; font-weight:700;
+      font-size:0.75rem; box-shadow:0 4px 15px rgba(230,62,109,0.3); transition:0.2s;
     }
-    .btn-nueva:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-nueva:hover { filter:brightness(1.1); transform:translateY(-1px); }
 
     .obra-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 16px 20px;
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px; gap: 16px; transition: border-color 0.2s; flex-wrap: wrap;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:14px; padding:16px 20px;
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:12px; gap:16px; transition:border-color 0.2s; flex-wrap:wrap;
     }
-    .obra-card:hover { border-color: rgba(230,62,109,0.3); }
-    .obra-card h4    { margin: 0 0 4px; color: #fff; font-size: 1rem; }
-    .obra-card small { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; }
+    .obra-card:hover { border-color:rgba(230,62,109,0.3); }
+    .obra-card h4    { margin:0 0 4px; color:#fff; font-size:1rem; }
+    .obra-card small { color:var(--text-muted); font-size:0.75rem; font-weight:600; }
 
-    .badge { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 8px; text-transform: uppercase; }
-    .badge-aprobado  { color: #4CAF50; background: rgba(76,175,80,0.12);  border: 1px solid #4CAF50; }
-    .badge-pendiente { color: #f59e0b; background: rgba(245,158,11,0.12); border: 1px solid #f59e0b; }
-    .badge-rechazado { color: var(--accent); background: rgba(230,62,109,0.1); border: 1px solid var(--accent); }
+    .badge { display:inline-block; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:8px; text-transform:uppercase; }
+    .badge-aprobado  { color:#4CAF50; background:rgba(76,175,80,0.12);   border:1px solid #4CAF50; }
+    .badge-pendiente { color:#f59e0b; background:rgba(245,158,11,0.12);  border:1px solid #f59e0b; }
+    .badge-rechazado { color:var(--accent); background:rgba(230,62,109,0.1); border:1px solid var(--accent); }
+    .badge-revision  { color:var(--accent3); background:rgba(6,182,212,0.1); border:1px solid var(--accent3); }
+    .badge-suspension{ color:#ff4444; background:rgba(255,68,68,0.1); border:1px solid #ff4444; }
 
+    .obra-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .btn-gestionar {
-      color: var(--accent3); text-decoration: none; border: 1px solid var(--accent3);
-      padding: 7px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
-      white-space: nowrap; transition: 0.2s;
+      color:var(--accent3); text-decoration:none; border:1px solid var(--accent3);
+      padding:7px 14px; border-radius:8px; font-size:0.75rem; font-weight:700;
+      white-space:nowrap; transition:0.2s;
     }
-    .btn-gestionar:hover { background: var(--accent3); color: #000; }
-
-    .empty-obras { text-align: center; padding: 50px 20px; border: 1px dashed var(--border); border-radius: 14px; color: var(--text-muted); }
-    .empty-obras i { font-size: 2rem; margin-bottom: 12px; display: block; opacity: 0.4; }
-
-    /* Aviso de debug — se muestra si el autor no tiene obras pero hay datos en el sheet */
-    .debug-box {
-      background: rgba(245,158,11,0.08); border: 1px solid #f59e0b;
-      border-radius: 12px; padding: 14px 18px; margin-top: 12px;
-      font-size: 0.8rem; color: #f59e0b; display: none;
+    .btn-gestionar:hover { background:var(--accent3); color:#000; }
+    .btn-editar {
+      color:var(--text-muted); text-decoration:none; border:1px solid var(--border);
+      padding:7px 14px; border-radius:8px; font-size:0.75rem; font-weight:700;
+      white-space:nowrap; transition:0.2s;
     }
-    .debug-box code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+    .btn-editar:hover { border-color:var(--accent); color:var(--accent); }
+
+    .empty-obras {
+      text-align:center; padding:50px 20px;
+      border:1px dashed var(--border); border-radius:14px; color:var(--text-muted);
+    }
+    .empty-obras i { font-size:2rem; margin-bottom:12px; display:block; opacity:0.4; }
+
+    /* Aviso de suspensión */
+    .susp-banner {
+      background:rgba(255,68,68,0.08); border:1px solid #ff4444;
+      border-radius:12px; padding:14px 18px; margin-bottom:20px;
+      font-size:0.85rem; color:#ff4444; display:none;
+    }
+    .susp-banner strong { display:block; margin-bottom:4px; font-size:0.9rem; }
   </style>
 </head>
 <body>
   <div class="bg-grid"></div>
 
   <nav class="top-nav">
-    <span class="brand">KOTATSU</span>
-    <button class="logout" id="logoutBtn" title="Cerrar sesión"><i class="fas fa-power-off"></i></button>
+    <span class="brand">KOTATSUNAME</span>
+    <div class="nav-links">
+      <a href="index.html" class="btn-home">Biblioteca</a>
+      <button class="logout" id="logoutBtn" title="Cerrar sesión"><i class="fas fa-power-off"></i></button>
+    </div>
   </nav>
 
   <main class="container">
 
-    <div style="margin-bottom: 20px;">
+    <!-- Banner suspensión (si alguna obra está suspendida) -->
+    <div class="susp-banner" id="suspBanner">
+      <strong>Tienes obras suspendidas</strong>
+      Algunas de tus obras han sido suspendidas por el staff. Revisa los motivos y contacta a moderación si crees que es un error.
+    </div>
+
+    <!-- Perfil -->
+    <div style="margin-bottom:20px;">
       <div class="profile-card">
         <div class="avatar-wrap">
           <img id="profileImg"
@@ -134,9 +173,8 @@
           </button>
         </div>
         <div class="profile-info">
-          <p class="role">Gremio de Escritores</p>
+          <p class="role">✦ Gremio de Escritores</p>
           <h2 id="profileName">Cargando...</h2>
-          <!-- Muestra el id del autor para verificar que coincide con el del Sheet -->
           <p class="pid" id="profileId"></p>
         </div>
       </div>
@@ -150,43 +188,42 @@
       </div>
     </div>
 
+    <!-- Obras -->
     <div class="obras-header">
       <h3>Mis Manuscritos</h3>
-      <a href="nueva_obra.html" class="btn-nueva">Nueva Obra</a>
+      <a href="nueva_obra.html" class="btn-nueva">+ Nueva Obra</a>
     </div>
 
     <div id="listaObras">
-      <div style="text-align:center; padding:40px; color:var(--text-muted);">
+      <div style="text-align:center;padding:40px;color:var(--text-muted);">
         <i class="fas fa-spinner fa-spin"></i> &nbsp;Cargando manuscritos...
       </div>
-    </div>
-
-    <!-- Solo se muestra si hay obras en el sheet pero ninguna coincide con el autor -->
-    <div class="debug-box" id="debugBox">
-      Aún no haz publicado ningun libro..<br>
-      Tu ID: <code id="debugMiId"></code>
     </div>
 
   </main>
 
   <script type="module">
-    import { loadEscritos } from "./escritos_data.js";
+    import { loadEscritos, clearCache } from "./escritos_data.js";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT_nZyhJIpjUEpg-C-e7jvuJvYkyf2Px4nxrzVON7Qwc3rBPbDGsPeJ0kpnT9Ttvky/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwd3a_Hx34raCWFXyzlLJsCSj1lfg84w79B5PWGoKu6YfRzt92E8giIMZZTl_M3f_FF/exec";
 
-    // Siempre leer como string limpio
     const idAutor = (localStorage.getItem("ktt_id")   || "").trim();
     const user    = (localStorage.getItem("ktt_user") || "").trim();
     const foto    =  localStorage.getItem("ktt_foto") || "";
+    const role    =  localStorage.getItem("ktt_role") || "user";
 
-    if (!idAutor || idAutor === "null" || idAutor === "") {
+    // Redirigir si no es autor
+    if (!idAutor || idAutor === "null") {
       window.location.href = "registrarse.html";
     }
+    // Si es staff, redirigir a su panel
+    if (role !== "user") {
+      const map = { owner:"panel_owner.html", admin:"panel_admin.html", mod:"panel_mod.html" };
+      window.location.href = map[role] || "registrarse.html";
+    }
 
-    // Mostrar perfil
     document.getElementById("profileName").textContent = user || "Autor";
     document.getElementById("profileId").textContent   = `ID: ${idAutor}`;
-
     if (foto && foto !== "undefined") {
       document.getElementById("profileImg").src = foto;
     }
@@ -198,86 +235,83 @@
     window.guardarFoto = async () => {
       const val = document.getElementById("driveInput").value.trim();
       if (!val) return;
-
       const match = val.match(/[-\w]{25,}/);
       if (!match) { alert("Enlace de Drive no válido."); return; }
-
       const url = `https://wsrv.nl/?url=${encodeURIComponent(
         `https://drive.google.com/uc?export=view&id=${match[0]}`
       )}&w=300&output=webp`;
-
       document.getElementById("profileImg").src = url;
       localStorage.setItem("ktt_foto", url);
       document.getElementById("photoDrawer").classList.remove("open");
       document.getElementById("driveInput").value = "";
-
       try {
         await fetch(SCRIPT_URL, {
-          method: "POST", mode: "no-cors",
-          body: JSON.stringify({ action: "actualizarFoto", idAutor, foto: url }),
+          method:"POST", mode:"no-cors",
+          body: JSON.stringify({ action:"actualizarFoto", idAutor, foto:url }),
         });
-      } catch (e) { console.warn("No se pudo sincronizar la foto:", e); }
+      } catch(e) {}
     };
 
     async function cargarObras() {
       const container = document.getElementById("listaObras");
       try {
         const todas = await loadEscritos();
-
-        // Filtrar obras cuyo id_autor coincide exactamente con el del autor logueado
-        const mias = todas.filter(o => o.id_autor === idAutor);
+        const mias  = todas.filter(o => o.id_autor === idAutor);
 
         if (mias.length === 0) {
           container.innerHTML = `
             <div class="empty-obras">
               <i class="fas fa-scroll"></i>
-              Aún no has publicado ningún manuscrito.
+              Aún no has publicado ningún manuscrito.<br>
+              <a href="nueva_obra.html" style="color:var(--accent3);text-decoration:none;margin-top:12px;display:inline-block;">Crear mi primera obra →</a>
             </div>`;
-
-          // Mostrar debug si hay obras en el sheet pero ninguna es mía
-          if (todas.length > 0) {
-            const todosIds = [...new Set(todas.map(o => o.id_autor))].join(", ");
-            document.getElementById("debugBox").style.display = "block";
-            document.getElementById("debugMiId").textContent  = idAutor;
-            
-          }
           return;
         }
 
-        // Ocultar debug si hay obras
-        document.getElementById("debugBox").style.display = "none";
+        // Mostrar banner si hay obras suspendidas
+        const haySuspendidas = mias.some(o =>
+          (o.aprobacion||"").toLowerCase() === "suspension");
+        if (haySuspendidas) {
+          document.getElementById("suspBanner").style.display = "block";
+        }
+
+        const badgeMap = {
+          aprobado  : ["badge-aprobado",   "Publicada"],
+          rechazado : ["badge-rechazado",  "Rechazada"],
+          revision  : ["badge-revision",   "En Revisión"],
+          suspension: ["badge-suspension", "Suspendida"],
+          pendiente : ["badge-pendiente",  "Pendiente"],
+        };
 
         container.innerHTML = mias.map(o => {
-          const ap = (o.aprobacion || "pendiente").trim().toLowerCase();
-          const badgeClass = ap === "aprobado"  ? "badge-aprobado"
-                           : ap === "rechazado" ? "badge-rechazado"
-                           : "badge-pendiente";
-          const badgeText  = ap === "aprobado"  ? "Publicada"
-                           : ap === "rechazado" ? "Rechazada"
-                           : "Pendiente";
+          const ap         = (o.aprobacion || "pendiente").trim().toLowerCase();
+          const [bc, bt]   = badgeMap[ap] || ["badge-pendiente", "Pendiente"];
           return `
             <div class="obra-card">
               <div>
-                <h4>${o.titulo}<span class="badge ${badgeClass}">${badgeText}</span></h4>
+                <h4>${o.titulo}<span class="badge ${bc}">${bt}</span></h4>
                 <small>
                   ${o.capitulos} CAPÍTULO${o.capitulos !== 1 ? "S" : ""}
-                  · ${(o.estado || "").toUpperCase()}
+                  &nbsp;·&nbsp; ${(o.estado || "").toUpperCase()}
                 </small>
               </div>
-              <a href="gestion_capitulos.html?id=${o.id}" class="btn-gestionar">Gestionar</a>
+              <div class="obra-actions">
+                <a href="nueva_obra.html?id=${o.id}" class="btn-editar">Editar</a>
+                <a href="gestion_capitulos.html?id=${o.id}" class="btn-gestionar">Capítulos</a>
+              </div>
             </div>`;
         }).join("");
 
-      } catch (e) {
+      } catch(e) {
         console.error(e);
         container.innerHTML = `<p style="color:var(--accent);text-align:center;">Error al cargar tus obras.</p>`;
       }
     }
 
-    // Si venimos de crear/editar una obra, esperar un poco antes de cargar
-    // para que el Sheet haya procesado el cambio
+    // Si venimos de guardar, esperar un poco para que el Sheet procese
     if (sessionStorage.getItem("panel_reload") === "1") {
       sessionStorage.removeItem("panel_reload");
+      clearCache();
       setTimeout(cargarObras, 2000);
     } else {
       cargarObras();
