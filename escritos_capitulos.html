@@ -8,71 +8,91 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     .nav-btn {
-      display: inline-block; text-decoration: none; background: transparent;
-      padding: 8px 18px; border-radius: 5px; color: #fff;
-      font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
-      letter-spacing: 0.1em; border: 1px solid var(--accent); cursor: pointer; transition: all 0.3s;
+      display:inline-block; text-decoration:none; background:transparent;
+      padding:8px 18px; border-radius:5px; color:#fff;
+      font-family:var(--font-body); font-size:0.8rem; font-weight:600;
+      letter-spacing:0.1em; border:1px solid var(--accent); cursor:pointer; transition:all 0.3s;
     }
-    .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
-    .btn-share-book { border-color: var(--accent3); color: var(--accent3); }
-    .btn-share-book:hover { background: var(--accent3); box-shadow: 0 0 15px var(--accent3); color: #fff; }
+    .nav-btn:hover { background:var(--accent); box-shadow:0 0 15px var(--accent); }
+    .btn-share-book { border-color:var(--accent3); color:var(--accent3); }
+    .btn-share-book:hover { background:var(--accent3); box-shadow:0 0 15px var(--accent3); color:#fff; }
 
-    .book-header { display: flex; gap: 28px; align-items: flex-start; margin-bottom: 36px; flex-wrap: wrap; }
+    .book-header {
+      display:flex; gap:28px; align-items:flex-start;
+      margin-bottom:36px; flex-wrap:wrap;
+    }
 
     .book-cover-placeholder {
-      width: 140px; height: 200px; flex-shrink: 0; border-radius: 10px;
-      border: 2px solid var(--border); display: flex; align-items: center;
-      justify-content: center; font-size: 2.5rem;
-      background: linear-gradient(90deg, var(--surface2) 25%, #1e1e2e 50%, var(--surface2) 75%);
-      background-size: 200% 100%; animation: shimmer 1.6s infinite;
+      width:140px; height:200px; flex-shrink:0; border-radius:10px;
+      border:2px solid var(--border); display:flex; align-items:center;
+      justify-content:center; font-size:2.5rem;
+      background:linear-gradient(90deg,var(--surface2) 25%,#1e1e2e 50%,var(--surface2) 75%);
+      background-size:200% 100%; animation:shimmer 1.6s infinite;
     }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
     .book-cover-img {
-      width: 140px; flex-shrink: 0; border-radius: 10px;
-      border: 2px solid var(--accent); box-shadow: 0 0 20px rgba(230,62,109,0.25);
-      object-fit: cover; opacity: 0; transition: opacity 0.6s ease;
+      width:140px; flex-shrink:0; border-radius:10px;
+      border:2px solid var(--accent); box-shadow:0 0 20px rgba(230,62,109,0.25);
+      object-fit:cover; opacity:0; transition:opacity 0.6s ease;
     }
-    .book-cover-img.loaded { opacity: 1; }
+    .book-cover-img.loaded { opacity:1; }
 
-    .book-info { flex: 1; min-width: 200px; }
+    .book-info { flex:1; min-width:200px; }
     .book-info h1 {
-      font-family: var(--font-display); font-size: clamp(1.2rem, 3vw, 2rem);
-      background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 8px;
+      font-family:var(--font-display); font-size:clamp(1.2rem,3vw,2rem);
+      background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:8px;
     }
-    .book-info .author   { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 10px; }
-    .book-info .sinopsis { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .book-info .author {
+      font-size:0.95rem; margin-bottom:10px;
+    }
+    .author-link {
+      color:var(--accent3); text-decoration:none; font-weight:600;
+      border-bottom:1px dashed var(--accent3); transition:0.2s;
+    }
+    .author-link:hover { color:#fff; border-bottom-color:#fff; }
 
-    .status-badge { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; border: 1px solid currentColor; }
-    .status-emision  { color: #4CAF50; background: rgba(76,175,80,0.1); }
-    .status-pausa    { color: #ff4444; background: rgba(255,68,68,0.1); }
-    .status-completo { color: #00d4ff; background: rgba(0,212,255,0.1); }
+    .book-info .sinopsis {
+      font-size:0.9rem; color:var(--text-muted); line-height:1.6; margin-bottom:14px;
+    }
 
-    .separator { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .status-badge {
+      display:inline-block; font-size:0.75rem; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      padding:4px 12px; border-radius:20px; border:1px solid currentColor;
+    }
+    .status-emision  { color:#4CAF50; background:rgba(76,175,80,0.1); }
+    .status-pausa    { color:#ff4444; background:rgba(255,68,68,0.1); }
+    .status-completo { color:#00d4ff; background:rgba(0,212,255,0.1); }
 
-    .chapter-list { display: flex; flex-direction: column; gap: 8px; }
+    .separator { border:none; border-top:1px solid var(--border); margin:28px 0; }
+
+    .chapter-list { display:flex; flex-direction:column; gap:8px; }
 
     .chapter-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 20px; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; cursor: pointer; transition: all 0.2s ease; gap: 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 20px; background:var(--surface); border:1px solid var(--border);
+      border-radius:10px; cursor:pointer; transition:all 0.2s ease; gap:12px;
     }
     .chapter-item:hover {
-      border-color: var(--accent); background: var(--surface2);
-      transform: translateX(4px); box-shadow: 0 0 12px rgba(230,62,109,0.15);
+      border-color:var(--accent); background:var(--surface2);
+      transform:translateX(4px); box-shadow:0 0 12px rgba(230,62,109,0.15);
     }
     .cap-num {
-      font-size: 0.78rem; font-weight: 700; color: var(--text-muted);
-      letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; min-width: 52px;
+      font-size:0.78rem; font-weight:700; color:var(--text-muted);
+      letter-spacing:0.1em; text-transform:uppercase; flex-shrink:0; min-width:52px;
     }
-    .cap-center { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-    .cap-label  { font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.04em; }
-    .cap-nombre { font-size: 0.98rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cap-arrow  { font-size: 0.85rem; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+    .cap-center { flex:1; display:flex; flex-direction:column; gap:2px; min-width:0; }
+    .cap-label  { font-size:0.78rem; color:var(--text-muted); letter-spacing:0.04em; }
+    .cap-nombre {
+      font-size:0.98rem; font-weight:600; color:var(--text);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .cap-arrow { font-size:0.85rem; color:var(--accent); font-weight:700; flex-shrink:0; }
 
-    .empty-caps { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-caps { text-align:center; padding:60px 20px; color:var(--text-muted); }
   </style>
 </head>
 <body>
@@ -80,8 +100,8 @@
   <div class="bg-glow"></div>
 
   <div class="wrapper">
-    <nav style="padding: 20px 0 28px; display:flex; justify-content:space-between; align-items:center;">
-      <a href="index.html" class="nav-btn">Volver</a>
+    <nav style="padding:20px 0 28px; display:flex; justify-content:space-between; align-items:center;">
+      <a href="index.html" class="nav-btn">Biblioteca</a>
       <button id="btnShareBook" class="nav-btn btn-share-book">Compartir</button>
     </nav>
 
@@ -98,6 +118,7 @@
     </div>
 
     <hr class="separator" />
+
     <h3 style="font-family:var(--font-display);font-size:1rem;letter-spacing:0.1em;margin-bottom:20px;color:var(--text-muted);">
       LISTA DE CAPÍTULOS
     </h3>
@@ -128,7 +149,7 @@
             btn.textContent = "✓ Copiado";
             setTimeout(() => { btn.textContent = orig; }, 2000);
           }
-        } catch (e) {}
+        } catch(e) {}
       });
     }
 
@@ -148,36 +169,43 @@
 
       // ── Portada ──
       if (libro.cover) {
-        const img = document.createElement("img");
-        img.className = "book-cover-img";
-        img.alt = libro.titulo;
+        const img       = document.createElement("img");
+        img.className   = "book-cover-img";
+        img.alt         = libro.titulo;
         img.addEventListener("load",  () => img.classList.add("loaded"));
         img.addEventListener("error", () => {
-          const ph = document.createElement("div");
-          ph.className = "book-cover-placeholder";
+          const ph       = document.createElement("div");
+          ph.className   = "book-cover-placeholder";
           ph.style.animation = "none";
           ph.textContent = "";
           img.replaceWith(ph);
         });
-        // cache-buster por libro
         img.src = libro.cover + (libro.cover.includes("?") ? "&" : "?") + "_cb=" + libro.id;
         document.getElementById("bookCover").replaceWith(img);
       } else {
         document.getElementById("bookCover").style.animation = "none";
+        document.getElementById("bookCover").textContent = "";
       }
 
       // ── Info ──
       document.getElementById("bookTitle").textContent    = libro.titulo;
-      document.getElementById("bookAuthor").textContent   = `Escrito por: ${libro.autor}`;
       document.getElementById("bookSinopsis").textContent = libro.sinopsis;
       document.getElementById("bookCaps").textContent     =
         `${libro.capitulos} capítulo${libro.capitulos !== 1 ? "s" : ""}`;
+
+      // Autor con enlace al perfil
+      const authorEl = document.getElementById("bookAuthor");
+      authorEl.innerHTML = `Escrito por: <a
+        href="perfil_autor.html?id=${encodeURIComponent(libro.id_autor)}"
+        class="author-link">${libro.autor}</a>`;
+
+      // Tags géneros
       document.getElementById("bookTags").innerHTML =
         libro.generos.map(g => `<span class="modal-tag">${g}</span>`).join("");
 
       // ── Estado ──
-      const statusEl  = document.getElementById("bookStatus");
-      const estadoRaw = (libro.estado || "").trim().toLowerCase();
+      const statusEl   = document.getElementById("bookStatus");
+      const estadoRaw  = (libro.estado || "").trim().toLowerCase();
       if (estadoRaw === "completado" || estadoRaw === "finalizado") {
         statusEl.textContent = "Completado"; statusEl.className = "status-badge status-completo";
       } else if (estadoRaw === "pausa" || estadoRaw === "en pausa") {
@@ -186,22 +214,20 @@
         statusEl.textContent = "En Emisión"; statusEl.className = "status-badge status-emision";
       }
 
-      // ── Lista de capítulos (nueva estructura: libro.caps[]) ──
+      // ── Lista de capítulos ──
       const container = document.getElementById("capContainer");
 
       if (!libro.caps || libro.caps.length === 0) {
-        container.innerHTML = `<div class="empty-caps">📭 Aún no hay capítulos disponibles.</div>`;
+        container.innerHTML = `<div class="empty-caps"> Aún no hay capítulos disponibles.</div>`;
         return;
       }
 
-      // libro.caps ya viene ordenado por numero (cap1, cap2, ...)
-      // El índice en el array (0-based) es el número global de lectura
       libro.caps.forEach((cap, idx) => {
-        const gNum = idx + 1; // número global secuencial para el lector
+        const gNum = idx + 1;
         const item = document.createElement("div");
-        item.className = "chapter-item";
+        item.className      = "chapter-item";
         item.dataset.id     = libroId;
-        item.dataset.num    = cap.numero;   // número real de columna (cap1=1, cap5=5...)
+        item.dataset.num    = cap.numero;
         item.dataset.gnum   = gNum;
         item.dataset.nombre = cap.nombre || "";
 
@@ -220,7 +246,6 @@
         const item = e.target.closest(".chapter-item");
         if (!item) return;
         const nombre = encodeURIComponent(item.dataset.nombre || "");
-        // Navegamos con: id del libro, num (número de columna real), gnum (posición secuencial)
         window.location.href =
           `libro_capitulo.html?id=${item.dataset.id}&num=${item.dataset.num}&gnum=${item.dataset.gnum}&nombre=${nombre}`;
       });
