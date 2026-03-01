@@ -1,56 +1,54 @@
-const CACHE_NAME = 'kotatsuname-v2'; // Incrementamos versión
-const OFFLINE_URL = '/offline.html';
+const CACHE_NAME = 'kotatsuname-v1';
+const OFFLINE_URL = '/offline.html'; // Definimos la ruta offline
 
 const ASSETS = [
-'/',
-'/index.html',
-'/escritos.html',
-'/escritos_capitulos.html',
-'/libro_capitulo.html',
-'/registrarse.html',
-'/panel_autor.html',
-'/gestion_capítulos.html',
-'/nueva_obra.html',
-'/buscador.js',
-'/catalogo.js',
-'/escrito_buscador.js',
-'/escrito_data.js',
-'/manifest.json',
-'/buscador.css',
-'/ICONO_192.png',
-'/ICONO_512.png',
-OFFLINE_URL // ¡Simplemente usa la variable aquí!
+  '/',
+  '/v2/index.html',
+
+  '/v2/escritos_capitulos.html',
+  '/v2/libro_capitulo.html',
+  '/v2/registrarse.html',
+  '/v2/panel_autor.html',
+  '/v2/gestion_capítulos.html',
+  '/v2/nueva_obra.html',
+  '/v2/escrito_buscador.js',
+  '/v2/escrito_data.js',
+  '/v2/staff_auth.js',
+  '/v2/perfil_autor.html',
+  '/v2/panel_owner.html',
+  '/v2/panel_mod.html',
+  '/v2/panel_autor.html',
+  '/v2/panel_admin.html',
+  '/v2/manifest.json',
+  '/v2/buscador.css',
+  '/ICONO_192.png',
+  '/ICONO_512.png',
+  OFFLINE_URL // ¡Simplemente usa la variable aquí!
 ];
 
-// Instalación
 self.addEventListener('install', (evt) => {
   evt.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
-  self.skipWaiting(); // Fuerza a que el nuevo SW tome el control de inmediato
-});
-
-// Activación (Limpieza de cachés viejas)
-self.addEventListener('activate', (evt) => {
-  evt.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
+    caches.open(CACHE_NAME).then((cache) => {
+      // Intenta cachear todos los archivos definidos
+      return cache.addAll(ASSETS);
     })
   );
 });
 
-// Fetch con estrategia híbrida
+// Lógica mejorada para detectar fallos de red
 self.addEventListener('fetch', (evt) => {
+  // Solo interceptamos navegaciones de páginas (HTML)
   if (evt.request.mode === 'navigate') {
     evt.respondWith(
-      fetch(evt.request).catch(() => caches.match(OFFLINE_URL))
+      fetch(evt.request).catch(() => {
+        // Si el fetch falla (no hay internet), devolvemos la página offline
+        return caches.match(OFFLINE_URL);
+      })
     );
   } else {
+    // Para imágenes/CSS/JS usamos la estrategia normal
     evt.respondWith(
       caches.match(evt.request).then((response) => {
-        // Retorna caché o busca en red
         return response || fetch(evt.request);
       })
     );
