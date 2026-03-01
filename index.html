@@ -6,99 +6,26 @@
   <title>KOTATSUNAME - Libros y Relatos</title>
   <link rel="stylesheet" href="buscador.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+    
   <meta name="theme-color" content="#0a0a0f">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="/v2/manifest.json">
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(()=>{});
-      });
-    }
-  </script>
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="manifest" href="/manifest.json">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('PWA Kotatsu: Service Worker registrado'))
+        .catch(err => console.log('PWA Kotatsu: Error al registrar Service Worker', err));
+    });
+  }
+</script>
+
   <style>
     .nav-btn {
-      text-decoration:none;background:transparent;padding:8px 15px;border-radius:5px;
-      color:#fff;font-family:var(--font-body);font-size:0.8rem;font-weight:600;
-      letter-spacing:0.08em;border:1px solid var(--accent);white-space:nowrap;
-      cursor:pointer;transition:all 0.3s;
-    }
-    .nav-btn:hover{background:var(--accent);box-shadow:0 0 15px var(--accent);}
-
-    .top-bar{
-      display:flex;align-items:center;justify-content:flex-end;gap:10px;
-      margin-bottom:16px;flex-wrap:wrap;
-    }
-
-    /* ── Usuario logueado ── */
-    .user-chip{
-      display:none;align-items:center;gap:8px;
-      background:var(--surface);border:1px solid var(--border);
-      border-radius:50px;padding:6px 14px 6px 8px;cursor:pointer;transition:0.2s;
-    }
-    .user-chip:hover{border-color:var(--accent);}
-    .user-chip img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--accent);}
-    .user-chip span{font-size:0.8rem;font-weight:600;color:var(--text);}
-
-    /* ── Recomendadas ── */
-    .rec-section{margin-bottom:40px;}
-    .rec-header{
-      display:flex;align-items:center;justify-content:space-between;
-      margin-bottom:16px;
-    }
-    .rec-title{
-      font-family:var(--font-display);font-size:0.85rem;letter-spacing:0.2em;
-      text-transform:uppercase;color:var(--text-muted);
-    }
-    .rec-refresh{
-      background:none;border:1px solid var(--border);color:var(--accent3);
-      font-family:var(--font-body);font-size:0.72rem;font-weight:600;
-      padding:4px 6px;border-radius:50%;cursor:pointer;transition:0.2s;
-      letter-spacing:0.1em;text-transform:uppercase;
-    }
-    .rec-refresh:hover{background:rgba(6,182,212,0.08);border-color:var(--accent3);}
-
-    .rec-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-      gap:16px;
-    }
-
-    /* Skeleton */
-    .skeleton{
-      background:linear-gradient(90deg,var(--surface2) 25%,#1e1e2e 50%,var(--surface2) 75%);
-      background-size:200% 100%;animation:shimmer 1.6s infinite;border-radius:12px;
-    }
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-    .skel-card{height:280px;}
-
-    /* ── Géneros extra ── */
-    .genres-collapsed .genre-extra{display:none;}
-    .genres-expanded .genre-extra{display:inline-flex;}
-
-    #pwaInstallBtn{display:none;}
-
-    /* Guide modal */
-    .guide-overlay{
-      display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:10000;
-      align-items:center;justify-content:center;padding:20px;
-    }
-    .guide-overlay.active{display:flex;}
-    .guide-card{
-      background:var(--surface);border:1px solid var(--accent);width:100%;max-width:400px;
-      padding:25px;border-radius:var(--radius);position:relative;box-shadow:0 10px 30px rgba(0,0,0,0.5);
-    }
-    .guide-title{font-family:var(--font-display);color:var(--accent);margin-bottom:20px;font-size:1.2rem;text-align:center;}
-    .guide-step{display:flex;gap:15px;margin-bottom:15px;align-items:flex-start;}
-    .step-num{
-      background:var(--accent);color:white;min-width:25px;height:25px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.8rem;
-    }
-    .guide-step p{margin:0;font-family:var(--font-body);color:var(--text);line-height:1.4;}
-    .guide-close{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem;}
-    
-      .nav-btn-refresh {
       text-decoration: none;
       background: transparent;
       padding: 8px 15px;
@@ -113,47 +40,116 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    .nav-btn-refresh:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+    .nav-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+    
+        .sidebar-btn {
+      text-decoration: none;
+      background: transparent;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--accent);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .sidebar-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+    
+        /* BOTÓN DE INSTALACIÓN (Oculto por defecto) */
+    #pwaInstallBtn { display: none; margin-left: 10px; }
+
+    /* MODAL DE GUÍA RESPONSIVE */
+    .guide-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .guide-overlay.active { display: flex; }
+
+    .guide-card {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      width: 100%;
+      max-width: 400px;
+      padding: 25px;
+      border-radius: var(--radius);
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .guide-title {
+      font-family: var(--font-display);
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .guide-step {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      background: var(--accent);
+      color: white;
+      min-width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .guide-step p {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .guide-close {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: none; border: none;
+      color: var(--text-muted); cursor: pointer; font-size: 1.2rem;
+    }
+
+    @media (max-width: 480px) {
+      .guide-card { padding: 20px; }
+      .guide-step p { font-size: 0.9rem; }
+    }
   </style>
 </head>
 <body>
+
   <div class="bg-grid"></div>
   <div class="bg-glow"></div>
 
   <div class="wrapper">
-
-    <!-- Barra superior -->
-    <div class="top-bar">
-      <!-- Chip de usuario si está logueado -->
-      <div class="user-chip" id="userChip" onclick="irAlPanel()">
-        <img id="chipAvatar" src="data:image/svg+xml,<svg viewBox='0 0 1 1' fill='%231a1a28' xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/></svg>" alt="Avatar" />
-        <span id="chipName">Usuario</span>
-      </div>
-      <!-- Botón acceso si no está logueado -->
-      <a href="registrarse.html" class="nav-btn" id="btnAcceso">👤 Acceder</a>
-      <button id="pwaInstallBtn" class="nav-btn">INSTALAR APP</button>
-    </div>
+                  <a href="registrarse.html" class="sidebar-btn">👤</a>
+                  <button id="pwaInstallBtn" class="nav-btn">INSTALAR APP</button>
 
     <header class="header">
       <h1 class="logo">⛩ BIBLIOTECA KOTATSU</h1>
       <p class="tagline">Crónicas, relatos y leyendas originales</p>
-    </header>
+      
 
-    <!-- ══ RECOMENDADAS ══ -->
-    <section class="rec-section" id="recSection">
-      <div class="rec-header">
-        <span class="rec-title">✦ Destacadas</span>
-        <button class="rec-refresh" onclick="shuffleRecomendadas()">↻ </button>
-                <a href="index.html" class="nav-btn-refresh">Actualizar</a>
-      </div>
-      <div class="rec-grid" id="recGrid">
-        <!-- Skeletons mientras carga -->
-        <div class="skeleton skel-card"></div>
-        <div class="skeleton skel-card"></div>
-        <div class="skeleton skel-card"></div>
-        <div class="skeleton skel-card"></div>
-      </div>
-    </section>
+    </header>
 
     <!-- BARRA DE BÚSQUEDA -->
     <div class="search-bar">
@@ -164,6 +160,8 @@
 
     <!-- FILTROS -->
     <div class="filters-panel">
+
+      <!-- Géneros -->
       <div class="filter-group">
         <div class="filter-label-row">
           <label class="filter-label">Género Literario</label>
@@ -183,31 +181,27 @@
           <button class="tag genre-extra" data-filter="genero" data-value="one-shot">One-shot</button>
           <button class="tag genre-extra" data-filter="genero" data-value="poesía">Poesía</button>
           <button class="tag genre-extra" data-filter="genero" data-value="ciencia-ficción">Sci-Fi</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="comedia">Comedia</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="histórico">Histórico</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="sobrenatural">Sobrenatural</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="suspenso">Suspenso</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="slice-of-life">Slice of Life</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="distopía">Distopía</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="mitología">Mitología</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="isekai">Isekai</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="cyberpunk">Cyberpunk</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="steampunk">Steampunk</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="LitRPG">LitRPG</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="harem">Harem</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="magia">Magia</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="deportes">Deportes</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="escolar">Escolar</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="yaoi">Yaoi</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="yuri">Yuri</button>
-          <button class="tag genre-extra" data-filter="genero" data-value="gore">Gore</button>
         </div>
       </div>
 
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <!-- Extensión -->
+      <div class="filter-group" style="display: none">
+        <label class="filter-label">Extensión (Capítulos)</label>
+        <div class="range-row">
+          <span class="range-label">Mín</span>
+          <input type="range" id="capsMin" min="1" max="50" value="1" />
+          <span id="capsMinVal" class="range-val">1</span>
+          <span class="range-label">Máx</span>
+          <input type="range" id="capsMax" min="1" max="50" value="50" />
+          <span id="capsMaxVal" class="range-val">50+</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         <button id="resetFilters" class="reset-btn">↺ Resetear Biblioteca</button>
         <a href="index.html" class="nav-btn">Refrescar</a>
       </div>
+
     </div>
 
     <!-- CONTADOR -->
@@ -215,7 +209,7 @@
       <span id="resultCount" class="result-count">Cargando biblioteca...</span>
     </div>
 
-    <!-- GRID PRINCIPAL -->
+    <!-- GRID -->
     <div id="resultsGrid" class="results-grid"></div>
 
     <!-- EMPTY STATE -->
@@ -223,26 +217,8 @@
       <span class="empty-icon"></span>
       <p>No se encontraron relatos en los archivos...</p>
     </div>
-  </div>
-
-  <!-- MODAL -->
-  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-box">
-      <button class="modal-close" id="modalClose" aria-label="Cerrar">✕</button>
-      <div class="modal-cover" id="modalCover"></div>
-      <div class="modal-content">
-        <div class="modal-badge" id="modalBadge">Escrito Original</div>
-        <h2 class="modal-title" id="modalTitle"></h2>
-        <div class="modal-tags" id="modalTags"></div>
-        <p class="modal-sinopsis" id="modalSinopsis"></p>
-        <div class="modal-footer">
-          <span class="modal-seasons" id="modalSeasons"></span>
-          <div class="modal-btns" id="modalBtns"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+    
+    
 <div id="pwaModal" class="guide-overlay">
   <div class="guide-card">
     <button class="guide-close" id="closeGuide">✕</button>
@@ -256,6 +232,7 @@
       <div class="step-num">2</div>
       <p>Selecciona <strong>"Agregar a la pantalla principal"</strong>.</p>
     </div>
+    
     <div class="guide-step">
       <div class="step-num">3</div>
       <p>Pulsa en <strong>"Instalar"</strong>.</p>
@@ -274,78 +251,91 @@
   </div>
 </div>
 
-<script>
-  // ── PWA install con Alternancia Inteligente ──
-  (function(){
-    const installBtn = document.getElementById('pwaInstallBtn');
-    const modal      = document.getElementById('pwaModal');
-    const closeBtn   = document.getElementById('closeGuide');
-    const btnE       = document.getElementById('btnEntendido');
-    const btnD       = document.getElementById('btnDescargar'); // Nuevo ID para el link de descarga
 
-    // Solo mostramos el botón si no está instalada
-    if (!window.matchMedia('(display-mode: standalone)').matches && installBtn) {
-      installBtn.style.display = 'inline-block';
+  </div><!-- /wrapper -->
+
+  <!-- ====== MODAL ====== -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+
+      <button class="modal-close" id="modalClose" aria-label="Cerrar">✕</button>
+
+      <div class="modal-cover" id="modalCover"></div>
+
+      <div class="modal-content">
+        <div class="modal-badge" id="modalBadge">Escrito Original</div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+
+        <div class="modal-tags" id="modalTags"></div>
+
+        <p class="modal-sinopsis" id="modalSinopsis"></p>
+
+        <div class="modal-footer">
+          <span class="modal-seasons" id="modalSeasons"></span>
+          <div class="modal-btns" id="modalBtns"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  (function() {
+    const installBtn = document.getElementById('pwaInstallBtn');
+    const modal = document.getElementById('pwaModal');
+    const closeBtn = document.getElementById('closeGuide');
+    const btnEntendido = document.getElementById('btnEntendido');
+    const btnDescargar = document.getElementById('btnDescargar');
+
+    // Función para intercambiar botones
+    const alternarBotones = () => {
+      // Obtenemos el número de veces que se ha abierto (por defecto 0)
+      let visitas = parseInt(localStorage.getItem('pwaVisits')) || 0;
+      visitas++; 
+      
+      // Si la visita es impar (1, 3, 5...) muestra Entendido
+      // Si la visita es par (2, 4, 6...) muestra Descarga
+      if (visitas % 2 !== 0) {
+        btnEntendido.style.display = 'block';
+        btnDescargar.style.display = 'none';
+      } else {
+        btnEntendido.style.display = 'none';
+        btnDescargar.style.display = 'block';
+      }
+      
+      // Guardamos el nuevo número de visita
+      localStorage.setItem('pwaVisits', visitas);
+    };
+
+    // Mostrar el botón principal solo si no es PWA instalada
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+      if (installBtn) installBtn.style.display = 'inline-block';
     }
 
+    // Al abrir el modal, ejecutamos el intercambio
     if (installBtn) {
       installBtn.onclick = () => {
-        // 1. Obtener y actualizar contador de aperturas
-        let visitas = parseInt(localStorage.getItem('pwa_visitas')) || 0;
-        visitas++;
-        localStorage.setItem('pwa_visitas', visitas);
-
-        // 2. Lógica de intercambio (Impar = Entendido, Par = Descarga)
-        if (visitas % 2 !== 0) {
-          if(btnE) btnE.style.display = 'block';
-          if(btnD) btnD.style.display = 'none';
-        } else {
-          if(btnE) btnE.style.display = 'none';
-          if(btnD) btnD.style.display = 'block';
-        }
-
-        // 3. Abrir modal
+        alternarBotones();
         modal.classList.add('active');
       };
     }
 
+    // Funciones para cerrar
     const cerrar = () => modal.classList.remove('active');
     
     if (closeBtn) closeBtn.onclick = cerrar;
-    if (btnE)     btnE.onclick     = cerrar;
-    if (btnD)     btnD.onclick     = cerrar; // También cierra al darle a descargar
+    if (btnEntendido) btnEntendido.onclick = cerrar;
+    if (btnDescargar) btnDescargar.onclick = cerrar;
 
-    window.addEventListener('click', e => { if (e.target === modal) cerrar(); });
+    // Cerrar si tocan fuera de la tarjeta
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) cerrar();
+    });
   })();
-
-  // ── Chip de usuario (Tu lógica original intacta) ──
-  (function(){
-    const id   = localStorage.getItem("ktt_id");
-    const user = localStorage.getItem("ktt_user");
-    const foto = localStorage.getItem("ktt_foto");
-
-    if (id) {
-      const btnAcceso = document.getElementById("btnAcceso");
-      if(btnAcceso) btnAcceso.style.display = "none";
-      
-      const chip = document.getElementById("userChip");
-      if(chip) {
-        chip.style.display = "flex";
-        document.getElementById("chipName").textContent = user || "Usuario";
-        if (foto) document.getElementById("chipAvatar").src = foto;
-      }
-    }
-  })();
-
-  // ── Navegación al Panel ──
-  window.irAlPanel = function() {
-    const role = localStorage.getItem("ktt_role") || "user";
-    const map  = { owner:"panel_owner.html", admin:"panel_admin.html", mod:"panel_mod.html" };
-    window.location.href = map[role] || "panel_autor.html";
-  };
 </script>
 
 
   <script type="module" src="escritos_buscador.js"></script>
+
 </body>
 </html>
